@@ -8,12 +8,15 @@ An easy to use GRE tunnels manager written in Go (Golang).
 - Port forwarding configuration for split tunnels
 - Easy multi-tunnels management, all in a single configuration file
 
-## 📝 Notes
-For the optimal experience, kindly have a look at the notes listed at https://github.com/oddmario/GRE-setup-guide/blob/f0681a21edbc7a99f0d2a798529529a807357b5d/README.md#notes (you mainly need to pay attention to notes 1 to 5. anything that follows the 5th note can be ignored)
-
 ## 📙 Glossary
 - **Backend server:** It is the server that you are trying to hide/protect the IP address of.
 - **GRE host:** It is the VPS (or server in general) that has the public IP address that you want to expose publicly instead of the IP of the destination server. (e.g. a BuyVM VPS)
+
+## 📝 Notes
+For the optimal experience, kindly have a look at the notes listed at https://github.com/oddmario/GRE-setup-guide/blob/f0681a21edbc7a99f0d2a798529529a807357b5d/README.md#notes (you mainly need to pay attention to notes 1 to 5. anything that follows the 5th note can be ignored)
+
+**Additional notes:**
+- If you have any backend servers running in the `DYNAMIC` IP mode, make sure that the GRE Manager instance of the GRE host runs before the GRE Manager instance(s) of the backend server(s) start(s).
 
 ## 🧐 Configuration documentation
 - `mode`

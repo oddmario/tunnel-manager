@@ -12,7 +12,7 @@ TODO...
 - `main_network_interface`
   * The name of the main network interface on the system (e.g. eth0)
 - `dynamic_ip_updater_api`
-  * `is_enabled`: Whether to enable the dynamic IP updater API or no. This can be enabled only on the GRE host mode. Note that you have to enable this if you have any tunnels with a **DYANMIC** `backend_server_public_ip` (ignored on the backend server mode)
+  * `is_enabled`: Whether to enable the dynamic IP updater API or no. This can be enabled only on the GRE host mode. Note that you have to enable this if you have any tunnels with a **DYNAMIC** `backend_server_public_ip` (ignored on the backend server mode)
   * `listen_address`: The IP address that will be used for the dynamic IP updater HTTP server. Make sure that it's binding to an IP address that the backend server(s) can access. (ignored on the backend server mode)
   * `listen_port`: The port that will be used for the dynamic IP updater HTTP server. (**Not ignored on the backend server mode!** Note that if you are configuring the GRE-Manager copy of a backend server, you need to specify this to be the same `listen_port` configured on the GRE Host configuration file)
 - `tunnels`: An array of the tunnel(s) that you would like to have.

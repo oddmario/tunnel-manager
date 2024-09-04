@@ -33,6 +33,34 @@ TODO...
   * `route_all_traffic_through_tunnel`: Whether to route all the traffic on the backend server through the GRE tunnel. This is ignored on the GRE host mode and only applies to the backend server. **Note that this can be `true` only on ONE tunnel!** You can't have more than a tunnel with `route_all_traffic_through_tunnel` set as `true`.
   * `dynamic_ip_updater_key`: The secret key (and also the key that identifies each tunnel) used for dynamic IP updates. This key is used to communicate between the GRE Manager instance hosted on the GRE host and the instance hosted on the backend server. Make sure to keep `dynamic_ip_updater_key` a secret, and make sure to set the same key on the configuration files of the GRE host and the backend server. **This has to be unique for each configured tunnel.**
 
+## Run as a systemd service
+Create `/etc/systemd/system/gremanager.service`:
+```
+[Unit]
+Description=GREManager
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/gremanager
+LimitNOFILE=2097152
+TasksMax=infinity
+ExecStart=/root/gremanager/gremanager_linux_amd64
+Restart=on-failure
+StartLimitInterval=180
+StartLimitBurst=30
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then you can enable it on startup & start it up:
+```
+systemctl enable gremanager.service
+systemctl start gremanager.service
+```
+
 ## Example configurations
 
 ### Two basic full tunnels

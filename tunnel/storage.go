@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/oddmario/gre-manager/constants"
 	"github.com/oddmario/gre-manager/utils"
 	"github.com/tidwall/gjson"
 )
@@ -54,9 +55,7 @@ func InitStorage() bool {
 		os.Remove(storageCfgPath)
 	}
 
-	origCfgPath, _ := filepath.Abs("./config.json")
-
-	utils.CopyFile(origCfgPath, storageCfgPath)
+	utils.CopyFile(constants.ConfigFilePath, storageCfgPath)
 
 	return true
 }

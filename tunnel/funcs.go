@@ -26,6 +26,7 @@ func (t *Tunnel) sendIPToGREHost(dynamic_ip_updater_api_listen_port int) {
 			SetHeader("X-Key", t.DynamicIPUpdaterKey).
 			SetBody(map[string]interface{}{"new_ip": external_ip}).
 			Post("http://" + t.GREHostMainPublicIP + ":" + utils.IToStr(dynamic_ip_updater_api_listen_port) + "/update_ip")
+
 		if req.StatusCode() != 200 {
 			fmt.Println("[WARN] Unable to send the public IP address of the backend to the GRE host. Retrying in 3 seconds...")
 
@@ -64,19 +65,19 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 		utils.Cmd("ip addr add "+t.GREHostTunnelIP+"/30 dev "+t.TunnelInterfaceName, true)
 		utils.Cmd("ip link set "+t.TunnelInterfaceName+" up", true)
 
-		utils.Cmd("iptables -A FORWARD -i gre+ -j ACCEPT", true)
-		utils.Cmd("iptables -A FORWARD -d "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
-		utils.Cmd("iptables -A FORWARD -s "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
-		utils.Cmd("iptables -t nat -A POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o gre+ -j SNAT --to-source "+t.GREHostPublicIP, true)
+		utils.Cmd("iptables-nft -A FORWARD -i gre+ -j ACCEPT", true)
+		utils.Cmd("iptables-nft -A FORWARD -d "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
+		utils.Cmd("iptables-nft -A FORWARD -s "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
+		utils.Cmd("iptables-nft -t nat -A POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o gre+ -j SNAT --to-source "+t.GREHostPublicIP, true)
 
 		if t.TunnelType == "full" {
-			utils.Cmd("iptables -t nat -A PREROUTING -d "+t.GREHostPublicIP+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
+			utils.Cmd("iptables-nft -t nat -A PREROUTING -d "+t.GREHostPublicIP+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
 		} else {
 			for _, port := range t.SplitTunnelPorts {
-				p := utils.IToStr(port["port"].(int))
+				p := port["port"].(string)
 				proto := port["proto"].(string)
 
-				utils.Cmd("iptables -t nat -A PREROUTING -d "+t.GREHostPublicIP+" -p "+proto+" -m "+proto+" --dport "+p+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
+				utils.Cmd("iptables-nft -t nat -A PREROUTING -d "+t.GREHostPublicIP+" -p "+proto+" -m "+proto+" --dport "+p+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
 			}
 		}
 	}
@@ -169,18 +170,18 @@ func (t *Tunnel) Deinit(mode, main_network_interface string, ignoreInitialisatio
 	}
 
 	if mode == "gre_host" {
-		utils.Cmd("iptables -D FORWARD -d "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
-		utils.Cmd("iptables -D FORWARD -s "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
-		utils.Cmd("iptables -t nat -D POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o gre+ -j SNAT --to-source "+t.GREHostPublicIP, true)
+		utils.Cmd("iptables-nft -D FORWARD -d "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
+		utils.Cmd("iptables-nft -D FORWARD -s "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
+		utils.Cmd("iptables-nft -t nat -D POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o gre+ -j SNAT --to-source "+t.GREHostPublicIP, true)
 
 		if t.TunnelType == "full" {
-			utils.Cmd("iptables -t nat -D PREROUTING -d "+t.GREHostPublicIP+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
+			utils.Cmd("iptables-nft -t nat -D PREROUTING -d "+t.GREHostPublicIP+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
 		} else {
 			for _, port := range t.SplitTunnelPorts {
-				p := utils.IToStr(port["port"].(int))
+				p := port["port"].(string)
 				proto := port["proto"].(string)
 
-				utils.Cmd("iptables -t nat -D PREROUTING -d "+t.GREHostPublicIP+" -p "+proto+" -m "+proto+" --dport "+p+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
+				utils.Cmd("iptables-nft -t nat -D PREROUTING -d "+t.GREHostPublicIP+" -p "+proto+" -m "+proto+" --dport "+p+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
 			}
 		}
 

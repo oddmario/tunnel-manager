@@ -34,6 +34,6 @@ func SysTuning(mode, mainNetworkInterface string) {
 		Cmd("ip link set "+mainNetworkInterface+" txqueuelen 15000", true)
 		Cmd("ethtool -K "+mainNetworkInterface+" gro off gso off tso off", true)
 
-		Cmd("iptables -F", true)
+		Cmd("iptables-nft -F", true)
 	}
 }

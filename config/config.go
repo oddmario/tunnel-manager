@@ -3,8 +3,8 @@ package config
 import (
 	"log"
 	"os"
-	"path/filepath"
 
+	"github.com/oddmario/gre-manager/constants"
 	"github.com/oddmario/gre-manager/tunnel"
 	"github.com/oddmario/gre-manager/utils"
 	"github.com/tidwall/gjson"
@@ -21,8 +21,7 @@ var Config *ConfigObject = &ConfigObject{
 }
 
 func LoadConfig() {
-	path, _ := filepath.Abs("./config.json")
-	cfg_content, _ := os.ReadFile(path)
+	cfg_content, _ := os.ReadFile(constants.ConfigFilePath)
 	cfgContentString := utils.BytesToString(cfg_content)
 
 	if !gjson.Valid(cfgContentString) {

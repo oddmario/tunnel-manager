@@ -29,12 +29,23 @@ TODO...
   * `tunnel_type`: Can be either **split** for a split tunnel, or **full** for a full tunnel. A full tunnel forwards all the ports, meanwhile a split tunnel forwards certain ports that you can configure in `split_tunnel_ports`
   * `split_tunnel_ports`: An array containing the ports to forward for the purpose of split tunneling.
     * `proto`: Can be either TCP or UDP
-    * `port`: The port to forward.
+    * `port`: The port(s) to forward. To use a port range, you can use the `start_port:end_port` format (e.g. `8000:8050`).
   * `route_all_traffic_through_tunnel`: Whether to route all the traffic on the backend server through the GRE tunnel. This is ignored on the GRE host mode and only applies to the backend server. **Note that this can be `true` only on ONE tunnel!** You can't have more than a tunnel with `route_all_traffic_through_tunnel` set as `true`.
   * `dynamic_ip_updater_key`: The secret key (and also the key that identifies each tunnel) used for dynamic IP updates. This key is used to communicate between the GRE Manager instance hosted on the GRE host and the instance hosted on the backend server. Make sure to keep `dynamic_ip_updater_key` a secret, and make sure to set the same key on the configuration files of the GRE host and the backend server. **This has to be unique for each configured tunnel.**
 
-## Run as a systemd service
-Create `/etc/systemd/system/gremanager.service`:
+## Installation as a service
+
+**On both the GRE host and the backend server(s):**
+
+1. Store your configuration file at `/etc/gremanager/config.json`
+
+   You can copy the example configuration file and change it to serve your needs.
+
+2. Place the binary file of GRE Manager at `/usr/local/bin` (e.g. `/usr/local/bin/gremanager`)
+
+3. Make the binary file executable: `chmod u+x /usr/local/bin/gremanager`
+
+4. Create a systemd service for GRE Manager. This can be done by creating `/etc/systemd/system/gremanager.service` to have this content:
 ```
 [Unit]
 Description=GREManager
@@ -42,10 +53,10 @@ After=network.target
 
 [Service]
 User=root
-WorkingDirectory=/root/gremanager
+WorkingDirectory=/usr/local/bin
 LimitNOFILE=2097152
 TasksMax=infinity
-ExecStart=/root/gremanager/gremanager_linux_amd64
+ExecStart=/usr/local/bin/gremanager /etc/gremanager/config.json
 Restart=on-failure
 StartLimitInterval=180
 StartLimitBurst=30
@@ -55,10 +66,9 @@ RestartSec=5s
 WantedBy=multi-user.target
 ```
 
-Then you can enable it on startup & start it up:
+5. Enable the GRE Manager service on startup & start it now:
 ```
-systemctl enable gremanager.service
-systemctl start gremanager.service
+systemctl enable --now gremanager.service
 ```
 
 ## Example configurations
@@ -91,7 +101,7 @@ systemctl start gremanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": 80
+                    "port": "80"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
@@ -112,7 +122,7 @@ systemctl start gremanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": 80
+                    "port": "80"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
@@ -148,7 +158,7 @@ systemctl start gremanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": 80
+                    "port": "80"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
@@ -169,7 +179,7 @@ systemctl start gremanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": 80
+                    "port": "80"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
@@ -207,7 +217,7 @@ systemctl start gremanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": 80
+                    "port": "80"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
@@ -243,7 +253,7 @@ systemctl start gremanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": 80
+                    "port": "80"
                 }
             ],
             "route_all_traffic_through_tunnel": false,

@@ -22,7 +22,7 @@
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": 80
+                    "port": "80"
                 }
             ],
             "route_all_traffic_through_tunnel": false,

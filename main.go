@@ -1,14 +1,17 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"runtime"
 	"syscall"
 
 	"github.com/oddmario/gre-manager/config"
+	"github.com/oddmario/gre-manager/constants"
 	"github.com/oddmario/gre-manager/dynamicipupdater"
 	"github.com/oddmario/gre-manager/tunnel"
 	"github.com/oddmario/gre-manager/utils"
@@ -18,6 +21,20 @@ func main() {
 	if runtime.GOOS != "linux" {
 		log.Fatal("Sorry! GRE Manager can only run on Linux systems.")
 	}
+
+	args := os.Args[1:]
+
+	if len(args) >= 1 {
+		constants.ConfigFilePath = args[0]
+	} else {
+		constants.ConfigFilePath, _ = filepath.Abs("./config.json")
+	}
+
+	if _, err := os.Stat(constants.ConfigFilePath); errors.Is(err, os.ErrNotExist) {
+		log.Fatal("The specified configuration file does not exist.")
+	}
+
+	fmt.Println("[INFO] Starting GRE Manager v" + constants.Version + "...")
 
 	config.LoadConfig()
 	tunnel.InitStorage()

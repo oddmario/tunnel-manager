@@ -18,7 +18,7 @@
             "tunnel_gateway_ip": "192.168.168.0",
             "gre_host_tunnel_ip": "192.168.168.1",
             "backend_server_tunnel_ip": "192.168.168.2",
-            "tunnel_type": "split",
+            "tunnel_type": "full",
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",

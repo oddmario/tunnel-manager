@@ -64,7 +64,7 @@ func updateIPHandler(c *gin.Context) {
 	tunnel.BackendServerPublicIP = newIP
 
 	if !tunnel.IsInitialised {
-		tunnel.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, false)
+		tunnel.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort)
 	}
 
 	c.Status(http.StatusOK)

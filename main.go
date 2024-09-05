@@ -54,7 +54,7 @@ func main() {
 	}
 
 	for _, tun := range config.Config.Tunnels {
-		tun.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, true)
+		tun.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort)
 	}
 
 	quitChannel := make(chan os.Signal, 1)

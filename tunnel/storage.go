@@ -11,10 +11,9 @@ import (
 )
 
 func getStoragePath() string {
-	path, _ := filepath.Abs("./")
-	storagePath := filepath.Join(path, ".gre-manager")
+	os.MkdirAll("/etc/gremanager/", os.ModePerm)
 
-	return storagePath
+	return filepath.Join("/etc/gremanager/", ".gre-manager")
 }
 
 func doesStorageExist() bool {

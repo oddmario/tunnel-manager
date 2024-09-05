@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-ping/ping"
 	"github.com/go-resty/resty/v2"
 	"github.com/oddmario/gre-manager/utils"
-	"github.com/oddmario/gre-manager/workers"
 )
 
 func (t *Tunnel) sendIPToGREHost(dynamic_ip_updater_api_listen_port int) {
@@ -41,7 +41,7 @@ func (t *Tunnel) sendIPToGREHost(dynamic_ip_updater_api_listen_port int) {
 	}
 }
 
-func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_api_listen_port int, startNetworkStateMonitorThread bool) bool {
+func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_api_listen_port int) bool {
 	if t.IsInitialised {
 		fmt.Println("[WARN] Failed to initialise the GRE tunnel " + t.GREHostMainPublicIP + " <-> " + t.BackendServerPublicIP + ": The tunnel has already been initialised. Ignoring tunnel initialisation.")
 
@@ -128,20 +128,48 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 			}
 		}
 
-		if backendIsDynamicIP && startNetworkStateMonitorThread {
-			go workers.MonitorInterfaceStateChange(main_network_interface, func(state string) {
-				if state == "UP" {
-					fmt.Println("[INFO] Tunnel " + t.GREHostMainPublicIP + " <-> " + t.BackendServerPublicIP + ": The main network interface has come up. Reinitialising the tunnel...")
+		if backendIsDynamicIP {
+			go func() {
+				for {
+					for i := range 4 {
+						pinger, err := ping.NewPinger(t.GREHostTunnelIP)
+						if err != nil {
+							time.Sleep(1 * time.Second)
 
-					t.BackendServerPublicIP = "DYNAMIC"
+							continue
+						}
 
-					t.Init(mode, main_network_interface, dynamic_ip_updater_api_listen_port, false)
-				} else {
-					fmt.Println("[INFO] Tunnel " + t.GREHostMainPublicIP + " <-> " + t.BackendServerPublicIP + ": The main network interface has gone down. Deinitialising the tunnel till it comes up again...")
+						pinger.Count = 1
+						pinger.Timeout = 5 * time.Second
 
-					t.Deinit(mode, main_network_interface, false)
+						err = pinger.Run()
+						if err != nil {
+							time.Sleep(1 * time.Second)
+
+							continue
+						}
+
+						stats := pinger.Statistics()
+
+						if stats.PacketLoss != 100 {
+							break
+						} else {
+							if i >= 3 {
+								fmt.Println("[INFO] Tunnel " + t.GREHostMainPublicIP + " <-> " + t.BackendServerPublicIP + ": The tunnel is unable to connect to the GRE host, a network change might have occurred. Attempting to reinitialise the tunnel...")
+
+								t.BackendServerPublicIP = "DYNAMIC"
+
+								t.Deinit(mode, main_network_interface, false)
+								t.Init(mode, main_network_interface, dynamic_ip_updater_api_listen_port)
+
+								return
+							}
+						}
+					}
+
+					time.Sleep(10 * time.Second)
 				}
-			})
+			}()
 		}
 	}
 

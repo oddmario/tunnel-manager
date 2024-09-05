@@ -62,9 +62,7 @@ func updateIPHandler(c *gin.Context) {
 	if tunnel.IsInitialised {
 		utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode gre local "+tunnel.GREHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true)
 	} else {
-		c.Status(http.StatusUnprocessableEntity)
-
-		return
+		tunnel.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, config.Config.DynamicIPUpdateInterval, config.Config.DynamicIPUpdateTimeout, config.Config.PingInterval, config.Config.PingTimeout)
 	}
 
 	c.Status(http.StatusOK)

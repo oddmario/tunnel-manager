@@ -18,6 +18,10 @@ var Config *ConfigObject = &ConfigObject{
 	DynamicIPUpdaterAPIIsEnabled:     false,
 	DynamicIPUpdaterAPIListenAddress: "",
 	DynamicIPUpdaterAPIListenPort:    0,
+	PingTimeout:                      0,
+	PingInterval:                     0,
+	DynamicIPUpdateTimeout:           0,
+	DynamicIPUpdateInterval:          0,
 }
 
 func LoadConfig() {
@@ -43,4 +47,9 @@ func storeEssentialConfigValues() {
 	Config.DynamicIPUpdaterAPIIsEnabled = config.Get("dynamic_ip_updater_api.is_enabled").Bool()
 	Config.DynamicIPUpdaterAPIListenAddress = config.Get("dynamic_ip_updater_api.listen_address").String()
 	Config.DynamicIPUpdaterAPIListenPort = int(config.Get("dynamic_ip_updater_api.listen_port").Int())
+
+	Config.PingTimeout = int(config.Get("timeouts.ping_timeout").Int())
+	Config.PingInterval = int(config.Get("timeouts.ping_interval").Int())
+	Config.DynamicIPUpdateTimeout = int(config.Get("timeouts.dynamic_ip_update_timeout").Int())
+	Config.DynamicIPUpdateInterval = int(config.Get("timeouts.dynamic_ip_update_attempt_interval").Int())
 }

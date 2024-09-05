@@ -9,4 +9,8 @@ type ConfigObject struct {
 	DynamicIPUpdaterAPIIsEnabled     bool
 	DynamicIPUpdaterAPIListenAddress string
 	DynamicIPUpdaterAPIListenPort    int
+	PingTimeout                      int
+	PingInterval                     int
+	DynamicIPUpdateTimeout           int
+	DynamicIPUpdateInterval          int
 }

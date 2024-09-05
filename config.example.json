@@ -6,6 +6,12 @@
         "listen_address": "0.0.0.0",
         "listen_port": 30100
     },
+    "timeouts": {
+        "ping_timeout": 5,
+        "ping_interval": 10,
+        "dynamic_ip_update_timeout": 30,
+        "dynamic_ip_update_attempt_interval": 3
+    },
     "tunnels": [
         {
             "gre_host_main_public_ip": "156.0.1.1",

@@ -10,27 +10,27 @@ import (
 	"github.com/oddmario/gre-manager/utils"
 )
 
-func (t *Tunnel) sendIPToGREHost(dynamic_ip_updater_api_listen_port int) {
+func (t *Tunnel) sendIPToGREHost(dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout int) {
 	for {
 		external_ip, err := utils.GetExternalIP()
 
 		if err != nil {
-			fmt.Println("[WARN] Unable to send the public IP address of the backend to the GRE host. Retrying in 3 seconds...")
+			fmt.Println("[WARN] Unable to send the public IP address of the backend to the GRE host. Retrying in " + utils.IToStr(dynamic_ip_update_attempt_interval) + " seconds...")
 
-			time.Sleep(3 * time.Second)
+			time.Sleep(time.Duration(dynamic_ip_update_attempt_interval) * time.Second)
 
 			continue
 		}
 
-		req, _ := resty.New().R().
+		req, _ := resty.New().SetTimeout(time.Duration(dynamic_ip_update_timeout)*time.Second).R().
 			SetHeader("X-Key", t.DynamicIPUpdaterKey).
 			SetBody(map[string]interface{}{"new_ip": external_ip}).
 			Post("http://" + t.GREHostMainPublicIP + ":" + utils.IToStr(dynamic_ip_updater_api_listen_port) + "/update_ip")
 
 		if req.StatusCode() != 200 {
-			fmt.Println("[WARN] Unable to send the public IP address of the backend to the GRE host. Retrying in 3 seconds...")
+			fmt.Println("[WARN] Unable to send the public IP address of the backend to the GRE host. Retrying in " + utils.IToStr(dynamic_ip_update_attempt_interval) + " seconds...")
 
-			time.Sleep(3 * time.Second)
+			time.Sleep(time.Duration(dynamic_ip_update_attempt_interval) * time.Second)
 
 			continue
 		}
@@ -41,7 +41,7 @@ func (t *Tunnel) sendIPToGREHost(dynamic_ip_updater_api_listen_port int) {
 	}
 }
 
-func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_api_listen_port int) bool {
+func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout, ping_interval, ping_timeout int) bool {
 	if t.IsInitialised {
 		fmt.Println("[WARN] Failed to initialise the GRE tunnel " + t.GREHostMainPublicIP + " <-> " + t.BackendServerPublicIP + ": The tunnel has already been initialised. Ignoring tunnel initialisation.")
 
@@ -105,7 +105,7 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 		if t.BackendServerPublicIP == "DYNAMIC" {
 			backendIsDynamicIP = true
 
-			t.sendIPToGREHost(dynamic_ip_updater_api_listen_port)
+			t.sendIPToGREHost(dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout)
 		}
 
 		utils.Cmd("ip tunnel add "+t.TunnelInterfaceName+" mode gre local "+t.BackendServerPublicIP+" remote "+t.GREHostMainPublicIP+" ttl 255 key "+utils.IToStr(t.TunnelKey), true)
@@ -139,8 +139,9 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 							continue
 						}
 
+						pinger.RecordRtts = false
 						pinger.Count = 1
-						pinger.Timeout = 5 * time.Second
+						pinger.Timeout = time.Duration(ping_timeout) * time.Second
 
 						err = pinger.Run()
 						if err != nil {
@@ -155,19 +156,18 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 							break
 						} else {
 							if i >= 3 {
-								fmt.Println("[INFO] Tunnel " + t.GREHostMainPublicIP + " <-> " + t.BackendServerPublicIP + ": The tunnel is unable to connect to the GRE host, a network change might have occurred. Attempting to reinitialise the tunnel...")
+								fmt.Println("[INFO] Tunnel " + t.GREHostMainPublicIP + " <-> " + t.BackendServerPublicIP + ": The tunnel is unable to connect to the GRE host, a network change might have occurred. Attempting to check for any dynamic IP changes...")
 
-								t.BackendServerPublicIP = "DYNAMIC"
+								t.sendIPToGREHost(dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout)
 
-								t.Deinit(mode, main_network_interface, false)
-								t.Init(mode, main_network_interface, dynamic_ip_updater_api_listen_port)
+								utils.Cmd("ip tunnel change "+t.TunnelInterfaceName+" mode gre local "+t.BackendServerPublicIP+" remote "+t.GREHostMainPublicIP+" ttl 255 key "+utils.IToStr(t.TunnelKey), true)
 
 								return
 							}
 						}
 					}
 
-					time.Sleep(10 * time.Second)
+					time.Sleep(time.Duration(ping_interval) * time.Second)
 				}
 			}()
 		}

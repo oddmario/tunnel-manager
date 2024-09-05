@@ -57,14 +57,14 @@ func updateIPHandler(c *gin.Context) {
 
 	newIP := jsonDataParser.Get("new_ip").String()
 
-	if tunnel.IsInitialised {
-		tunnel.Deinit(config.Config.Mode, config.Config.MainNetworkInterface, false)
-	}
-
 	tunnel.BackendServerPublicIP = newIP
 
-	if !tunnel.IsInitialised {
-		tunnel.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort)
+	if tunnel.IsInitialised {
+		utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode gre local "+tunnel.GREHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true)
+	} else {
+		c.Status(http.StatusUnprocessableEntity)
+
+		return
 	}
 
 	c.Status(http.StatusOK)

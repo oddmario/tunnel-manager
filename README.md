@@ -29,6 +29,15 @@ For the optimal experience, kindly have a look at the notes listed at https://gi
 
   * `listen_port`: The port that will be used for the dynamic IP updater HTTP server. (**This is not ignored on the backend server mode!** Note that if you are configuring the GRE-Manager copy of a backend server, you need to specify this to be the same `listen_port` configured on the GRE Host configuration file)
 
+- `timeouts`: All the timeouts are in seconds.
+  * `ping_timeout`: The maximum time allowed for a ping/ICMP request to finish.
+
+  * `ping_interval`: The pause/sleep between each ping/ICMP request. (you can consider it a keepalive interval for dynamic IP changes detection)
+
+  * `dynamic_ip_update_timeout`: The maximum time allowed for a "update_ip" HTTP request to finish.
+
+  * `dynamic_ip_update_attempt_interval`: When a "update_ip" HTTP request fails, this is the pause/sleep before attempting to initiate another one.
+
 - `tunnels`: An array of the tunnel(s) that you would like to have.
   * `gre_host_main_public_ip`: The main/primary public IP address of the GRE host.
 
@@ -108,6 +117,12 @@ systemctl enable --now gremanager.service
         "listen_address": "0.0.0.0",
         "listen_port": 30100
     },
+    "timeouts": {
+        "ping_timeout": 5,
+        "ping_interval": 10,
+        "dynamic_ip_update_timeout": 30,
+        "dynamic_ip_update_attempt_interval": 3
+    },
     "tunnels": [
         {
             "gre_host_main_public_ip": "[buyvm non-ddos protected ip]",
@@ -143,6 +158,12 @@ systemctl enable --now gremanager.service
         "is_enabled": false,
         "listen_address": "0.0.0.0",
         "listen_port": 30100
+    },
+    "timeouts": {
+        "ping_timeout": 5,
+        "ping_interval": 10,
+        "dynamic_ip_update_timeout": 30,
+        "dynamic_ip_update_attempt_interval": 3
     },
     "tunnels": [
         {
@@ -181,6 +202,12 @@ systemctl enable --now gremanager.service
         "is_enabled": false,
         "listen_address": "0.0.0.0",
         "listen_port": 30100
+    },
+    "timeouts": {
+        "ping_timeout": 5,
+        "ping_interval": 10,
+        "dynamic_ip_update_timeout": 30,
+        "dynamic_ip_update_attempt_interval": 3
     },
     "tunnels": [
         {
@@ -238,6 +265,12 @@ systemctl enable --now gremanager.service
         "is_enabled": false,
         "listen_address": "0.0.0.0",
         "listen_port": 30100
+    },
+    "timeouts": {
+        "ping_timeout": 5,
+        "ping_interval": 10,
+        "dynamic_ip_update_timeout": 30,
+        "dynamic_ip_update_attempt_interval": 3
     },
     "tunnels": [
         {
@@ -298,6 +331,12 @@ systemctl enable --now gremanager.service
         "listen_address": "0.0.0.0",
         "listen_port": 30100
     },
+    "timeouts": {
+        "ping_timeout": 5,
+        "ping_interval": 10,
+        "dynamic_ip_update_timeout": 30,
+        "dynamic_ip_update_attempt_interval": 3
+    },
     "tunnels": [
         {
             "gre_host_main_public_ip": "156.0.1.1",
@@ -333,6 +372,12 @@ systemctl enable --now gremanager.service
         "is_enabled": false,
         "listen_address": "0.0.0.0",
         "listen_port": 30100
+    },
+    "timeouts": {
+        "ping_timeout": 5,
+        "ping_interval": 10,
+        "dynamic_ip_update_timeout": 30,
+        "dynamic_ip_update_attempt_interval": 3
     },
     "tunnels": [
         {

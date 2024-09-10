@@ -10,16 +10,16 @@ import (
 	"runtime"
 	"syscall"
 
-	"github.com/oddmario/gre-manager/config"
-	"github.com/oddmario/gre-manager/constants"
-	"github.com/oddmario/gre-manager/dynamicipupdater"
-	"github.com/oddmario/gre-manager/tunnel"
-	"github.com/oddmario/gre-manager/utils"
+	"github.com/oddmario/tunnels-manager/config"
+	"github.com/oddmario/tunnels-manager/constants"
+	"github.com/oddmario/tunnels-manager/dynamicipupdater"
+	"github.com/oddmario/tunnels-manager/tunnel"
+	"github.com/oddmario/tunnels-manager/utils"
 )
 
 func main() {
 	if runtime.GOOS != "linux" {
-		log.Fatal("Sorry! GRE Manager can only run on Linux systems.")
+		log.Fatal("Sorry! Tunnels Manager can only run on Linux systems.")
 	}
 
 	args := os.Args[1:]
@@ -34,7 +34,7 @@ func main() {
 		log.Fatal("The specified configuration file does not exist.")
 	}
 
-	fmt.Println("[INFO] Starting GRE Manager v" + constants.Version + "...")
+	fmt.Println("[INFO] Starting Tunnels Manager v" + constants.Version + "...")
 
 	config.LoadConfig()
 	tunnel.InitStorage()
@@ -46,10 +46,10 @@ func main() {
 	utils.SysTuning(config.Config.Mode, config.Config.MainNetworkInterface)
 
 	if config.Config.DynamicIPUpdaterAPIIsEnabled {
-		if config.Config.Mode == "gre_host" {
+		if config.Config.Mode == "tunnel_host" {
 			go dynamicipupdater.InitServer()
 		} else {
-			fmt.Println("[WARN] The dynamic IP updater API is meant to be enabled only on the GRE host. Ignoring `dynamic_ip_updater_api.is_enabled`...")
+			fmt.Println("[WARN] The dynamic IP updater API is meant to be enabled only on the tunnel host. Ignoring `dynamic_ip_updater_api.is_enabled`...")
 		}
 	}
 

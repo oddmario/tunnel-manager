@@ -5,15 +5,15 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/oddmario/gre-manager/constants"
-	"github.com/oddmario/gre-manager/utils"
+	"github.com/oddmario/tunnels-manager/constants"
+	"github.com/oddmario/tunnels-manager/utils"
 	"github.com/tidwall/gjson"
 )
 
 func getStoragePath() string {
-	os.MkdirAll("/etc/gremanager/", os.ModePerm)
+	os.MkdirAll("/etc/tunsmanager/", os.ModePerm)
 
-	return filepath.Join("/etc/gremanager/", ".gre-manager")
+	return filepath.Join("/etc/tunsmanager/", ".tuns-manager")
 }
 
 func doesStorageExist() bool {

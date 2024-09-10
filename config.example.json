@@ -14,15 +14,16 @@
     },
     "tunnels": [
         {
-            "gre_host_main_public_ip": "156.0.1.1",
-            "gre_host_public_ip": "156.0.1.2",
+            "driver": "gre",
+            "tunnel_host_main_public_ip": "156.0.1.1",
+            "tunnel_host_public_ip": "156.0.1.2",
             "backend_server_public_ip": "156.0.0.2",
             "tunnel_key": 1,
-            "tunnel_interface_name": "gre1",
+            "tunnel_interface_name": "tun1",
             "tunnel_rttables_id": 100,
             "tunnel_rttables_name": "TUN1",
             "tunnel_gateway_ip": "192.168.168.0",
-            "gre_host_tunnel_ip": "192.168.168.1",
+            "tunnel_host_tunnel_ip": "192.168.168.1",
             "backend_server_tunnel_ip": "192.168.168.2",
             "tunnel_type": "full",
             "split_tunnel_ports": [

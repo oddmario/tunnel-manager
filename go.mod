@@ -1,4 +1,4 @@
-module github.com/oddmario/gre-manager
+module github.com/oddmario/tunnels-manager
 
 go 1.22.6
 

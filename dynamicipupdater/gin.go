@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oddmario/gre-manager/config"
-	"github.com/oddmario/gre-manager/utils"
+	"github.com/oddmario/tunnels-manager/config"
+	"github.com/oddmario/tunnels-manager/utils"
 )
 
 func InitServer() {

@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oddmario/gre-manager/config"
-	"github.com/oddmario/gre-manager/tunnel"
-	"github.com/oddmario/gre-manager/utils"
+	"github.com/oddmario/tunnels-manager/config"
+	"github.com/oddmario/tunnels-manager/tunnel"
+	"github.com/oddmario/tunnels-manager/utils"
 	"github.com/tidwall/gjson"
 )
 
@@ -60,7 +60,7 @@ func updateIPHandler(c *gin.Context) {
 	tunnel.BackendServerPublicIP = newIP
 
 	if tunnel.IsInitialised {
-		utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode gre local "+tunnel.GREHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true)
+		utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode gre local "+tunnel.TunHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true)
 	} else {
 		tunnel.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, config.Config.DynamicIPUpdateInterval, config.Config.DynamicIPUpdateTimeout, config.Config.PingInterval, config.Config.PingTimeout)
 	}

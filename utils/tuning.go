@@ -3,7 +3,7 @@ package utils
 func SysTuning(mode, mainNetworkInterface string) {
 	Cmd("modprobe ip_gre", true)
 
-	if mode == "gre_host" {
+	if mode == "tunnel_host" {
 		Cmd("sysctl -w net.ipv4.ip_forward=1", true)
 		Cmd("sysctl -w net.ipv4.conf."+mainNetworkInterface+".proxy_arp=1", true)
 		Cmd("sysctl -w net.ipv4.conf.all.rp_filter=0", true)

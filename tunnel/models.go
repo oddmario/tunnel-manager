@@ -2,15 +2,16 @@ package tunnel
 
 type Tunnel struct {
 	IsInitialised                      bool
-	GREHostMainPublicIP                string
-	GREHostPublicIP                    string
+	TunnelDriver                       string
+	TunHostMainPublicIP                string
+	TunHostPublicIP                    string
 	BackendServerPublicIP              string
 	TunnelKey                          int
 	TunnelInterfaceName                string
 	TunnelRoutingTablesID              int
 	TunnelRoutingTablesName            string
 	TunnelGatewayIP                    string
-	GREHostTunnelIP                    string
+	TunHostTunnelIP                    string
 	BackendServerTunnelIP              string
 	TunnelType                         string
 	SplitTunnelPorts                   []map[string]interface{}

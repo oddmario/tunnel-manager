@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/oddmario/gre-manager/utils"
+	"github.com/oddmario/tunnels-manager/utils"
 	"github.com/tidwall/gjson"
 )
 
@@ -16,7 +16,7 @@ func TunsFromJson(j gjson.Result) []*Tunnel {
 
 	j.ForEach(func(key, value gjson.Result) bool {
 		if value.Get("tunnel_type").String() != "split" && value.Get("tunnel_type").String() != "full" {
-			fmt.Println("[WARN] Failed to initialise the GRE tunnel " + value.Get("gre_host_main_public_ip").String() + " <-> " + value.Get("backend_server_public_ip").String() + ": The tunnel type has to be either `split` or `full`. Ignoring tunnel initialisation.")
+			fmt.Println("[WARN] Failed to initialise the tunnel " + value.Get("tunnel_host_main_public_ip").String() + " <-> " + value.Get("backend_server_public_ip").String() + ": The tunnel type has to be either `split` or `full`. Ignoring tunnel initialisation.")
 
 			return true
 		}
@@ -28,7 +28,7 @@ func TunsFromJson(j gjson.Result) []*Tunnel {
 				proto := strings.ToLower(value_port.Get("proto").String())
 
 				if proto != "tcp" && proto != "udp" {
-					fmt.Println("[WARN] Failed to configure split tunnel port for " + value.Get("gre_host_main_public_ip").String() + " <-> " + value.Get("backend_server_public_ip").String() + ": Invalid split tunnel port protocol specified. Only TCP & UDP are allowed. Ignoring port rule.")
+					fmt.Println("[WARN] Failed to configure split tunnel port for " + value.Get("tunnel_host_main_public_ip").String() + " <-> " + value.Get("backend_server_public_ip").String() + ": Invalid split tunnel port protocol specified. Only TCP & UDP are allowed. Ignoring port rule.")
 
 					return true
 				}
@@ -44,15 +44,16 @@ func TunsFromJson(j gjson.Result) []*Tunnel {
 
 		tuns = append(tuns, &Tunnel{
 			IsInitialised:                      false,
-			GREHostMainPublicIP:                value.Get("gre_host_main_public_ip").String(),
-			GREHostPublicIP:                    value.Get("gre_host_public_ip").String(),
+			TunnelDriver:                       value.Get("driver").String(),
+			TunHostMainPublicIP:                value.Get("tunnel_host_main_public_ip").String(),
+			TunHostPublicIP:                    value.Get("tunnel_host_public_ip").String(),
 			BackendServerPublicIP:              value.Get("backend_server_public_ip").String(),
 			TunnelKey:                          int(value.Get("tunnel_key").Int()),
 			TunnelInterfaceName:                value.Get("tunnel_interface_name").String(),
 			TunnelRoutingTablesID:              int(value.Get("tunnel_rttables_id").Int()),
 			TunnelRoutingTablesName:            value.Get("tunnel_rttables_name").String(),
 			TunnelGatewayIP:                    value.Get("tunnel_gateway_ip").String(),
-			GREHostTunnelIP:                    value.Get("gre_host_tunnel_ip").String(),
+			TunHostTunnelIP:                    value.Get("tunnel_host_tunnel_ip").String(),
 			BackendServerTunnelIP:              value.Get("backend_server_tunnel_ip").String(),
 			TunnelType:                         value.Get("tunnel_type").String(),
 			SplitTunnelPorts:                   splitTunnelPorts,

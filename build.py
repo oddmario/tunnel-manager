@@ -34,12 +34,12 @@ def build():
     sys_env['GOARCH'] = "amd64"
     sys_env['GOOS'] = "linux"
     sys_env['CGO_ENABLED'] = "0"
-    subprocess.check_output(["go", "build", "-o", "bin/gremanager_linux_amd64"], env=sys_env)
+    subprocess.check_output(["go", "build", "-o", "bin/tunsmanager_linux_amd64"], env=sys_env)
 
     print("Building for Linux arm64...")
     sys_env['GOARCH'] = "arm64"
     sys_env['GOOS'] = "linux"
-    subprocess.check_output(["go", "build", "-o", "bin/gremanager_linux_arm64"], env=sys_env)
+    subprocess.check_output(["go", "build", "-o", "bin/tunsmanager_linux_arm64"], env=sys_env)
 
 def main():
     patcher()

@@ -17,4 +17,9 @@ type Tunnel struct {
 	SplitTunnelPorts                   []map[string]interface{}
 	ShouldRouteAllTrafficThroughTunnel bool
 	DynamicIPUpdaterKey                string
+	WGPrivateKeyFilePath               string
+	WGServerTunnelHostListenPort       int
+	WGServerBackendServerListenPort    int
+	WGTunnelHostPubKey                 string
+	WGBackendServerPubKey              string
 }

@@ -60,7 +60,13 @@ func updateIPHandler(c *gin.Context) {
 	tunnel.BackendServerPublicIP = newIP
 
 	if tunnel.IsInitialised {
-		utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode gre local "+tunnel.TunHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true)
+		if tunnel.TunnelDriver == "gre" {
+			utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode gre local "+tunnel.TunHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true)
+		}
+
+		if tunnel.TunnelDriver == "wireguard" {
+			utils.Cmd("wg set "+tunnel.TunnelInterfaceName+" listen-port "+utils.IToStr(tunnel.WGServerTunnelHostListenPort)+" peer "+tunnel.WGBackendServerPubKey+" allowed-ips "+tunnel.BackendServerTunnelIP+"/32 endpoint "+tunnel.BackendServerPublicIP+":"+utils.IToStr(tunnel.WGServerBackendServerListenPort)+" persistent-keepalive 25", true)
+		}
 	} else {
 		tunnel.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, config.Config.DynamicIPUpdateInterval, config.Config.DynamicIPUpdateTimeout, config.Config.PingInterval, config.Config.PingTimeout)
 	}

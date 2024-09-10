@@ -59,6 +59,11 @@ func TunsFromJson(j gjson.Result) []*Tunnel {
 			SplitTunnelPorts:                   splitTunnelPorts,
 			ShouldRouteAllTrafficThroughTunnel: value.Get("route_all_traffic_through_tunnel").Bool(),
 			DynamicIPUpdaterKey:                value.Get("dynamic_ip_updater_key").String(),
+			WGPrivateKeyFilePath:               value.Get("wg_private_key_file_path").String(),
+			WGServerTunnelHostListenPort:       int(value.Get("wg_server_tunnel_host_listen_port").Int()),
+			WGServerBackendServerListenPort:    int(value.Get("wg_server_backend_server_listen_port").Int()),
+			WGTunnelHostPubKey:                 value.Get("wg_tunnel_host_public_key").String(),
+			WGBackendServerPubKey:              value.Get("wg_backend_server_public_key").String(),
 		})
 
 		return true

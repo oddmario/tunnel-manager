@@ -39,6 +39,8 @@ For the optimal experience, kindly have a look at the notes listed at https://gi
   * `dynamic_ip_update_attempt_interval`: When a "update_ip" HTTP request fails, this is the pause/sleep before attempting to initiate another one.
 
 - `tunnels`: An array of the tunnel(s) that you would like to have.
+  * `driver`: The driver to use for the tunnel. Possible options are: gre, wireguard
+
   * `tunnel_host_main_public_ip`: The main/primary public IP address of the tunnel host.
 
   * `tunnel_host_public_ip`: The public IP address of the tunnel host that you would like to use instead of the backend server IP address. If your tunnel host has only one public IP address, make **tunnel_host_main_public_ip** and **tunnel_host_public_ip** equal. When they are equal, you will use your single public IP address of the tunnel host for the tunneling.
@@ -68,6 +70,16 @@ For the optimal experience, kindly have a look at the notes listed at https://gi
   * `route_all_traffic_through_tunnel`: Whether to route all the traffic on the backend server through the tunnel. This is ignored on the tunnel host mode and only applies to the backend server. **Note that this can be `true` only on ONE tunnel!** You can't have more than a tunnel with `route_all_traffic_through_tunnel` set as `true`.
 
   * `dynamic_ip_updater_key`: The secret key (and also the key that identifies each tunnel) used for dynamic IP updates. This key is used to communicate between the Tunnel Manager instance hosted on the tunnel host, and the instance hosted on the backend server, for the purpose of updating the dynamic IP [in case a backend server is configured as "DYNAMIC"]. Make sure to keep `dynamic_ip_updater_key` a secret, **and make sure to set the same key on the configuration files of both the tunnel host and the backend server. [This has to be unique for each configured tunnel.]**
+
+  * `wg_private_key_file_path`: The path to the WireGuard private key file. (works only when `driver` is set to `wireguard`).
+
+  * `wg_server_tunnel_host_listen_port`: The port to make the WireGuard server start on [on the tunnel host]. (works only when `driver` is set to `wireguard`).
+
+  * `wg_server_backend_server_listen_port`: The port to make the WireGuard server start on [on the backend server]. (works only when `driver` is set to `wireguard`).
+
+  * `wg_tunnel_host_public_key`: The WireGuard public key of the tunnel host. (works only when `driver` is set to `wireguard`).
+
+  * `wg_backend_server_public_key`: The WireGuard public key of the backend server. (works only when `driver` is set to `wireguard`).
 
 ## 🛠️ Installation as a service
 

@@ -69,6 +69,7 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 		if t.TunnelDriver == "wireguard" {
 			utils.Cmd("ip link add "+t.TunnelInterfaceName+" type wireguard", true)
 			utils.Cmd("ip addr add "+t.TunHostTunnelIP+"/24 dev "+t.TunnelInterfaceName, true)
+			utils.Cmd("wg set "+t.TunnelInterfaceName+" private-key \""+t.WGPrivateKeyFilePath+"\"", true)
 		}
 
 		utils.Cmd("ip link set "+t.TunnelInterfaceName+" up", true)
@@ -77,23 +78,16 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 			utils.Cmd("wg set "+t.TunnelInterfaceName+" listen-port "+utils.IToStr(t.WGServerTunnelHostListenPort)+" peer "+t.WGBackendServerPubKey+" allowed-ips "+t.BackendServerTunnelIP+"/32 endpoint "+t.BackendServerPublicIP+":"+utils.IToStr(t.WGServerBackendServerListenPort)+" persistent-keepalive 25", true)
 		}
 
-		if t.TunnelDriver == "gre" {
-			utils.Cmd("iptables-nft -A FORWARD -i gre+ -j ACCEPT", true)
-		}
-
-		if t.TunnelDriver == "wireguard" {
-			utils.Cmd("iptables-nft -A FORWARD -i wg+ -j ACCEPT", true)
-		}
-
+		utils.Cmd("iptables-nft -A FORWARD -i "+t.TunnelInterfaceName+" -j ACCEPT", true)
 		utils.Cmd("iptables-nft -A FORWARD -d "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
 		utils.Cmd("iptables-nft -A FORWARD -s "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
 
 		if t.TunnelDriver == "gre" {
-			utils.Cmd("iptables-nft -t nat -A POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o gre+ -j SNAT --to-source "+t.TunHostPublicIP, true)
+			utils.Cmd("iptables-nft -t nat -A POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o "+t.TunnelInterfaceName+" -j SNAT --to-source "+t.TunHostPublicIP, true)
 		}
 
 		if t.TunnelDriver == "wireguard" {
-			utils.Cmd("iptables-nft -t nat -A POSTROUTING -s "+t.TunnelGatewayIP+"/24 ! -o wg+ -j SNAT --to-source "+t.TunHostPublicIP, true)
+			utils.Cmd("iptables-nft -t nat -A POSTROUTING -s "+t.TunnelGatewayIP+"/24 ! -o "+t.TunnelInterfaceName+" -j SNAT --to-source "+t.TunHostPublicIP, true)
 		}
 
 		if t.TunnelType == "full" {
@@ -149,6 +143,7 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 		if t.TunnelDriver == "wireguard" {
 			utils.Cmd("ip link add "+t.TunnelInterfaceName+" type wireguard", true)
 			utils.Cmd("ip addr add "+t.BackendServerTunnelIP+"/24 dev "+t.TunnelInterfaceName, true)
+			utils.Cmd("wg set "+t.TunnelInterfaceName+" private-key \""+t.WGPrivateKeyFilePath+"\"", true)
 		}
 
 		utils.Cmd("ip link set "+t.TunnelInterfaceName+" up", true)
@@ -260,11 +255,11 @@ func (t *Tunnel) Deinit(mode, main_network_interface string, ignoreInitialisatio
 		utils.Cmd("iptables-nft -D FORWARD -s "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
 
 		if t.TunnelDriver == "gre" {
-			utils.Cmd("iptables-nft -t nat -D POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o gre+ -j SNAT --to-source "+t.TunHostPublicIP, true)
+			utils.Cmd("iptables-nft -t nat -D POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o "+t.TunnelInterfaceName+" -j SNAT --to-source "+t.TunHostPublicIP, true)
 		}
 
 		if t.TunnelDriver == "wireguard" {
-			utils.Cmd("iptables-nft -t nat -D POSTROUTING -s "+t.TunnelGatewayIP+"/24 ! -o wg+ -j SNAT --to-source "+t.TunHostPublicIP, true)
+			utils.Cmd("iptables-nft -t nat -D POSTROUTING -s "+t.TunnelGatewayIP+"/24 ! -o "+t.TunnelInterfaceName+" -j SNAT --to-source "+t.TunHostPublicIP, true)
 		}
 
 		if t.TunnelType == "full" {

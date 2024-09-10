@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-ping/ping"
 	"github.com/go-resty/resty/v2"
-	"github.com/oddmario/tunnels-manager/utils"
+	"github.com/oddmario/tunnel-manager/utils"
 )
 
 func (t *Tunnel) sendIPToTunHost(dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout int) {

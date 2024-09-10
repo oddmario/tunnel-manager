@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/oddmario/tunnels-manager/constants"
-	"github.com/oddmario/tunnels-manager/tunnel"
-	"github.com/oddmario/tunnels-manager/utils"
+	"github.com/oddmario/tunnel-manager/constants"
+	"github.com/oddmario/tunnel-manager/tunnel"
+	"github.com/oddmario/tunnel-manager/utils"
 	"github.com/tidwall/gjson"
 )
 

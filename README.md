@@ -1,12 +1,12 @@
-# 🚇 Tunnels Manager
+# 🚇 Tunnel Manager
 
-An easy to use GRE, WireGuard and IPIP tunnels manager written in Go (Golang).
+An easy to use GRE and WireGuard tunnel manager written in Go (Golang).
 
 ## ✨ Features
 - Dynamic IP addresses support for the backend server(s)
 - Full & split tunnels support
 - Port forwarding configuration for split tunnels
-- Easy multi-tunnels management, all in a single configuration file
+- Easy multi-tunnel management, all in a single configuration file
 
 ## 📙 Glossary
 - **Backend server:** It is the server that you are trying to hide/protect the IP address of.
@@ -27,7 +27,7 @@ For the optimal experience, kindly have a look at the notes listed at https://gi
 
   * `listen_address`: The IP address that will be used for the dynamic IP updater HTTP server. Make sure that it's binding to an IP address that the backend server(s) can access. (this config parameter is ignored on the backend server mode)
 
-  * `listen_port`: The port that will be used for the dynamic IP updater HTTP server. (**This is not ignored on the backend server mode!** Note that if you are configuring the Tunnels-Manager copy of a backend server, you need to specify this to be the same `listen_port` configured on the tunnel host configuration file)
+  * `listen_port`: The port that will be used for the dynamic IP updater HTTP server. (**This is not ignored on the backend server mode!** Note that if you are configuring the Tunnel-Manager copy of a backend server, you need to specify this to be the same `listen_port` configured on the tunnel host configuration file)
 
 - `timeouts`: All the timeouts are in seconds.
   * `ping_timeout`: The maximum time allowed for a ping/ICMP request to finish.
@@ -49,17 +49,17 @@ For the optimal experience, kindly have a look at the notes listed at https://gi
 
   * `tunnel_interface_name`: The name of the tunnel interface. This has to be unique for each configured tunnel. (e.g. tun1, tun2, tun3, etc)
 
-  * `tunnel_rttables_id`: The ID of the routing table used by the tunnel. This has to be unique for each configured tunnel. (e.g. 100, 200, 300, etc). **[This is ignored on the tunnel host as it is used only by the backend server instance. So it doesn't matter what value you set for `tunnel_rttables_id` on the tunnel host instance of Tunnels Manager]**
+  * `tunnel_rttables_id`: The ID of the routing table used by the tunnel. This has to be unique for each configured tunnel. (e.g. 100, 200, 300, etc). **[This is ignored on the tunnel host as it is used only by the backend server instance. So it doesn't matter what value you set for `tunnel_rttables_id` on the tunnel host instance of Tunnel Manager]**
 
-  * `tunnel_rttables_name`: The name of the routing table used by the tunnel. This has to be unique for each configured tunnel. (e.g. TUN1, TUN2, TUN3, etc). **[This is ignored on the tunnel host as it is used only by the backend server instance. So it doesn't matter what value you set for `tunnel_rttables_name` on the tunnel host instance of Tunnels Manager]**
+  * `tunnel_rttables_name`: The name of the routing table used by the tunnel. This has to be unique for each configured tunnel. (e.g. TUN1, TUN2, TUN3, etc). **[This is ignored on the tunnel host as it is used only by the backend server instance. So it doesn't matter what value you set for `tunnel_rttables_name` on the tunnel host instance of Tunnel Manager]**
 
-  * `tunnel_gateway_ip`: The gateway that will be used by Tunnels Manager to setup the tunnel.
+  * `tunnel_gateway_ip`: The gateway that will be used by Tunnel Manager to setup the tunnel.
 
   * `tunnel_host_tunnel_ip`: The IP address of the tunnel host inside the tunnel.
 
   * `backend_server_tunnel_ip`: The IP address of the backend server inside the tunnel.
 
-  * `tunnel_type`: Can be either **split** for a split tunnel, or **full** for a full tunnel. A full tunnel forwards all the ports, meanwhile a split tunnel forwards certain ports that you can configure in `split_tunnel_ports`. **[This is ignored on the backend server as it is used only by the tunnel host instance. So it doesn't matter what value you set for `tunnel_type` on a backend server instance of Tunnels Manager]**
+  * `tunnel_type`: Can be either **split** for a split tunnel, or **full** for a full tunnel. A full tunnel forwards all the ports, meanwhile a split tunnel forwards certain ports that you can configure in `split_tunnel_ports`. **[This is ignored on the backend server as it is used only by the tunnel host instance. So it doesn't matter what value you set for `tunnel_type` on a backend server instance of Tunnel Manager]**
 
   * `split_tunnel_ports`: An array containing the ports to forward for the purpose of split tunneling. This is ignored if `tunnel_type` is set to "full"
     * `proto`: Can be either TCP or UDP
@@ -67,21 +67,21 @@ For the optimal experience, kindly have a look at the notes listed at https://gi
 
   * `route_all_traffic_through_tunnel`: Whether to route all the traffic on the backend server through the tunnel. This is ignored on the tunnel host mode and only applies to the backend server. **Note that this can be `true` only on ONE tunnel!** You can't have more than a tunnel with `route_all_traffic_through_tunnel` set as `true`.
 
-  * `dynamic_ip_updater_key`: The secret key (and also the key that identifies each tunnel) used for dynamic IP updates. This key is used to communicate between the Tunnels Manager instance hosted on the tunnel host, and the instance hosted on the backend server, for the purpose of updating the dynamic IP [in case a backend server is configured as "DYNAMIC"]. Make sure to keep `dynamic_ip_updater_key` a secret, **and make sure to set the same key on the configuration files of both the tunnel host and the backend server. [This has to be unique for each configured tunnel.]**
+  * `dynamic_ip_updater_key`: The secret key (and also the key that identifies each tunnel) used for dynamic IP updates. This key is used to communicate between the Tunnel Manager instance hosted on the tunnel host, and the instance hosted on the backend server, for the purpose of updating the dynamic IP [in case a backend server is configured as "DYNAMIC"]. Make sure to keep `dynamic_ip_updater_key` a secret, **and make sure to set the same key on the configuration files of both the tunnel host and the backend server. [This has to be unique for each configured tunnel.]**
 
 ## 🛠️ Installation as a service
 
 **On both the tunnel host and the backend server(s):**
 
-1. Store your configuration file at `/etc/tunsmanager/config.json`
+1. Store your configuration file at `/etc/tunmanager/config.json`
 
    You can copy the example configuration file and change it to serve your needs.
-2. Place the binary file of Tunnels Manager at `/usr/local/bin` (e.g. `/usr/local/bin/tunsmanager`)
-3. Make the binary file executable: `chmod u+x /usr/local/bin/tunsmanager`
-4. Create a systemd service for Tunnels Manager. This can be done by creating `/etc/systemd/system/tunsmanager.service` to have this content:
+2. Place the binary file of Tunnel Manager at `/usr/local/bin` (e.g. `/usr/local/bin/tunmanager`)
+3. Make the binary file executable: `chmod u+x /usr/local/bin/tunmanager`
+4. Create a systemd service for Tunnel Manager. This can be done by creating `/etc/systemd/system/tunmanager.service` to have this content:
 ```
 [Unit]
-Description=TUNSManager
+Description=TUNManager
 After=network.target
 
 [Service]
@@ -89,7 +89,7 @@ User=root
 WorkingDirectory=/usr/local/bin
 LimitNOFILE=2097152
 TasksMax=infinity
-ExecStart=/usr/local/bin/tunsmanager /etc/tunsmanager/config.json
+ExecStart=/usr/local/bin/tunmanager /etc/tunmanager/config.json
 Restart=on-failure
 StartLimitInterval=180
 StartLimitBurst=30
@@ -98,9 +98,9 @@ RestartSec=5s
 [Install]
 WantedBy=multi-user.target
 ```
-5. Enable the Tunnels Manager service on startup & start it now:
+5. Enable the Tunnel Manager service on startup & start it now:
 ```
-systemctl enable --now tunsmanager.service
+systemctl enable --now tunmanager.service
 ```
 
 ## 💡 Example configuration case scenarios

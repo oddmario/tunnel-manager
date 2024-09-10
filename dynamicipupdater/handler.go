@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/oddmario/tunnels-manager/config"
-	"github.com/oddmario/tunnels-manager/tunnel"
-	"github.com/oddmario/tunnels-manager/utils"
+	"github.com/oddmario/tunnel-manager/config"
+	"github.com/oddmario/tunnel-manager/tunnel"
+	"github.com/oddmario/tunnel-manager/utils"
 	"github.com/tidwall/gjson"
 )
 

@@ -10,16 +10,16 @@ import (
 	"runtime"
 	"syscall"
 
-	"github.com/oddmario/tunnels-manager/config"
-	"github.com/oddmario/tunnels-manager/constants"
-	"github.com/oddmario/tunnels-manager/dynamicipupdater"
-	"github.com/oddmario/tunnels-manager/tunnel"
-	"github.com/oddmario/tunnels-manager/utils"
+	"github.com/oddmario/tunnel-manager/config"
+	"github.com/oddmario/tunnel-manager/constants"
+	"github.com/oddmario/tunnel-manager/dynamicipupdater"
+	"github.com/oddmario/tunnel-manager/tunnel"
+	"github.com/oddmario/tunnel-manager/utils"
 )
 
 func main() {
 	if runtime.GOOS != "linux" {
-		log.Fatal("Sorry! Tunnels Manager can only run on Linux systems.")
+		log.Fatal("Sorry! Tunnel Manager can only run on Linux systems.")
 	}
 
 	args := os.Args[1:]
@@ -34,7 +34,7 @@ func main() {
 		log.Fatal("The specified configuration file does not exist.")
 	}
 
-	fmt.Println("[INFO] Starting Tunnels Manager v" + constants.Version + "...")
+	fmt.Println("[INFO] Starting Tunnel Manager v" + constants.Version + "...")
 
 	config.LoadConfig()
 	tunnel.InitStorage()

@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/oddmario/tunnels-manager/utils"
+	"github.com/oddmario/tunnel-manager/utils"
 	"github.com/tidwall/gjson"
 )
 

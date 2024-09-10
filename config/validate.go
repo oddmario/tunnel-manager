@@ -3,7 +3,7 @@ package config
 import (
 	"log"
 
-	"github.com/oddmario/tunnels-manager/utils"
+	"github.com/oddmario/tunnel-manager/utils"
 )
 
 func validateConfig() {

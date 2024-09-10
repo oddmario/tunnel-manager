@@ -1,6 +1,6 @@
 package config
 
-import "github.com/oddmario/tunnels-manager/tunnel"
+import "github.com/oddmario/tunnel-manager/tunnel"
 
 type ConfigObject struct {
 	Mode                             string

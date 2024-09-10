@@ -300,6 +300,7 @@ systemctl enable --now tunmanager.service
             "dynamic_ip_updater_key": "wowsers123@"
         },
         {
+            "driver": "gre",
             "tunnel_host_main_public_ip": "156.0.1.1",
             "tunnel_host_public_ip": "156.0.1.3",
             "backend_server_public_ip": "156.0.0.2",

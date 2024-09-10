@@ -29,11 +29,22 @@
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": "80"
+                    "src_port": "80",
+                    "dest_port": ""
+                },
+                {
+                    "proto": "TCP",
+                    "src_port": "81",
+                    "dest_port": "9000"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
-            "dynamic_ip_updater_key": "wowsers123@"
+            "dynamic_ip_updater_key": "wowsers123@",
+            "wg_private_key_file_path": "/etc/tunmanager/wg-private",
+            "wg_server_tunnel_host_listen_port": 51820,
+            "wg_server_backend_server_listen_port": 51820,
+            "wg_tunnel_host_public_key": "",
+            "wg_backend_server_public_key": ""
         }
     ]
 }

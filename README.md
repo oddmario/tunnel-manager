@@ -65,7 +65,14 @@ For the optimal experience, kindly have a look at the notes listed at https://gi
 
   * `split_tunnel_ports`: An array containing the ports to forward for the purpose of split tunneling. This is ignored if `tunnel_type` is set to "full"
     * `proto`: Can be either TCP or UDP
-    * `port`: The port(s) to forward. To use a port range, you can use the `start_port:end_port` format (e.g. `8000:8050`).
+
+    * `src_port`: The port(s) that the clients will connect to using the tunnel host public IP. To use a port range, you can use the `start_port:end_port` format (e.g. `8000:8050`).
+
+    * `dest_port`: The port on the backend server. Keep this an empty string if you want it to be the same as `src_port`
+
+    * More explanation on src & dest ports: Assume that 1.0.0.0 is the public IP address of the tunnel host, and 2.0.0.0 is the public IP address of the backend server. Creating a split tunnel port rule with "src_port" as 80 and "dest_port" as 9000 will make 1.0.0.0:80 forward to 2.0.0.0:9000. And if "dest_port" is empty, then 1.0.0.0:80 will simply forward to 2.0.0.0:80
+
+    * If you want `dest_port` to be the same port as `src_port`, it is recommended to keep `dest_port` empty (i.e. don't set it to a value equal to that of "src_port"). This way you're allowing Tunnel Manager to handle it properly for you [especially if `src_port` is a port range]
 
   * `route_all_traffic_through_tunnel`: Whether to route all the traffic on the backend server through the tunnel. This is ignored on the tunnel host mode and only applies to the backend server. **Note that this can be `true` only on ONE tunnel!** You can't have more than a tunnel with `route_all_traffic_through_tunnel` set as `true`.
 
@@ -152,11 +159,22 @@ systemctl enable --now tunmanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": "80"
+                    "src_port": "80",
+                    "dest_port": ""
+                },
+                {
+                    "proto": "TCP",
+                    "src_port": "81",
+                    "dest_port": "9000"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
-            "dynamic_ip_updater_key": "wowsers123@"
+            "dynamic_ip_updater_key": "wowsers123@",
+            "wg_private_key_file_path": "/etc/tunmanager/wg-private",
+            "wg_server_tunnel_host_listen_port": 51820,
+            "wg_server_backend_server_listen_port": 51820,
+            "wg_tunnel_host_public_key": "",
+            "wg_backend_server_public_key": ""
         }
     ]
 }
@@ -195,11 +213,22 @@ systemctl enable --now tunmanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": "80"
+                    "src_port": "80",
+                    "dest_port": ""
+                },
+                {
+                    "proto": "TCP",
+                    "src_port": "81",
+                    "dest_port": "9000"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
-            "dynamic_ip_updater_key": "wowsers123@"
+            "dynamic_ip_updater_key": "wowsers123@",
+            "wg_private_key_file_path": "/etc/tunmanager/wg-private",
+            "wg_server_tunnel_host_listen_port": 51820,
+            "wg_server_backend_server_listen_port": 51820,
+            "wg_tunnel_host_public_key": "",
+            "wg_backend_server_public_key": ""
         }
     ]
 }
@@ -240,11 +269,22 @@ systemctl enable --now tunmanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": "80"
+                    "src_port": "80",
+                    "dest_port": ""
+                },
+                {
+                    "proto": "TCP",
+                    "src_port": "81",
+                    "dest_port": "9000"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
-            "dynamic_ip_updater_key": "wowsers123@"
+            "dynamic_ip_updater_key": "wowsers123@",
+            "wg_private_key_file_path": "/etc/tunmanager/wg-private",
+            "wg_server_tunnel_host_listen_port": 51820,
+            "wg_server_backend_server_listen_port": 51820,
+            "wg_tunnel_host_public_key": "",
+            "wg_backend_server_public_key": ""
         },
         {
             "driver": "gre",
@@ -262,11 +302,22 @@ systemctl enable --now tunmanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": "80"
+                    "src_port": "80",
+                    "dest_port": ""
+                },
+                {
+                    "proto": "TCP",
+                    "src_port": "81",
+                    "dest_port": "9000"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
-            "dynamic_ip_updater_key": "wowsers124@"
+            "dynamic_ip_updater_key": "wowsers124@",
+            "wg_private_key_file_path": "/etc/tunmanager/wg-private",
+            "wg_server_tunnel_host_listen_port": 51820,
+            "wg_server_backend_server_listen_port": 51820,
+            "wg_tunnel_host_public_key": "",
+            "wg_backend_server_public_key": ""
         }
     ]
 }
@@ -305,11 +356,22 @@ systemctl enable --now tunmanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": "80"
+                    "src_port": "80",
+                    "dest_port": ""
+                },
+                {
+                    "proto": "TCP",
+                    "src_port": "81",
+                    "dest_port": "9000"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
-            "dynamic_ip_updater_key": "wowsers123@"
+            "dynamic_ip_updater_key": "wowsers123@",
+            "wg_private_key_file_path": "/etc/tunmanager/wg-private",
+            "wg_server_tunnel_host_listen_port": 51820,
+            "wg_server_backend_server_listen_port": 51820,
+            "wg_tunnel_host_public_key": "",
+            "wg_backend_server_public_key": ""
         },
         {
             "driver": "gre",
@@ -327,11 +389,22 @@ systemctl enable --now tunmanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": "80"
+                    "src_port": "80",
+                    "dest_port": ""
+                },
+                {
+                    "proto": "TCP",
+                    "src_port": "81",
+                    "dest_port": "9000"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
-            "dynamic_ip_updater_key": "wowsers124@"
+            "dynamic_ip_updater_key": "wowsers124@",
+            "wg_private_key_file_path": "/etc/tunmanager/wg-private",
+            "wg_server_tunnel_host_listen_port": 51820,
+            "wg_server_backend_server_listen_port": 51820,
+            "wg_tunnel_host_public_key": "",
+            "wg_backend_server_public_key": ""
         }
     ]
 }
@@ -372,11 +445,22 @@ systemctl enable --now tunmanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": "80"
+                    "src_port": "80",
+                    "dest_port": ""
+                },
+                {
+                    "proto": "TCP",
+                    "src_port": "81",
+                    "dest_port": "9000"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
-            "dynamic_ip_updater_key": "wowsers123@"
+            "dynamic_ip_updater_key": "wowsers123@",
+            "wg_private_key_file_path": "/etc/tunmanager/wg-private",
+            "wg_server_tunnel_host_listen_port": 51820,
+            "wg_server_backend_server_listen_port": 51820,
+            "wg_tunnel_host_public_key": "",
+            "wg_backend_server_public_key": ""
         }
     ]
 }
@@ -415,11 +499,22 @@ systemctl enable --now tunmanager.service
             "split_tunnel_ports": [
                 {
                     "proto": "TCP",
-                    "port": "80"
+                    "src_port": "80",
+                    "dest_port": ""
+                },
+                {
+                    "proto": "TCP",
+                    "src_port": "81",
+                    "dest_port": "9000"
                 }
             ],
             "route_all_traffic_through_tunnel": false,
-            "dynamic_ip_updater_key": "wowsers123@"
+            "dynamic_ip_updater_key": "wowsers123@",
+            "wg_private_key_file_path": "/etc/tunmanager/wg-private",
+            "wg_server_tunnel_host_listen_port": 51820,
+            "wg_server_backend_server_listen_port": 51820,
+            "wg_tunnel_host_public_key": "",
+            "wg_backend_server_public_key": ""
         }
     ]
 }

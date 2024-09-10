@@ -100,10 +100,17 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 			utils.Cmd("iptables-nft -t nat -A PREROUTING -d "+t.TunHostPublicIP+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
 		} else {
 			for _, port := range t.SplitTunnelPorts {
-				p := port["port"].(string)
+				p := port["src_port"].(string)
+				dp := port["dest_port"].(string)
 				proto := port["proto"].(string)
 
-				utils.Cmd("iptables-nft -t nat -A PREROUTING -d "+t.TunHostPublicIP+" -p "+proto+" -m "+proto+" --dport "+p+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
+				dstPort := ""
+
+				if len(dp) > 0 {
+					dstPort = ":" + dp
+				}
+
+				utils.Cmd("iptables-nft -t nat -A PREROUTING -d "+t.TunHostPublicIP+" -p "+proto+" -m "+proto+" --dport "+p+" -j DNAT --to-destination "+t.BackendServerTunnelIP+dstPort, true)
 			}
 		}
 	}
@@ -264,10 +271,17 @@ func (t *Tunnel) Deinit(mode, main_network_interface string, ignoreInitialisatio
 			utils.Cmd("iptables-nft -t nat -D PREROUTING -d "+t.TunHostPublicIP+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
 		} else {
 			for _, port := range t.SplitTunnelPorts {
-				p := port["port"].(string)
+				p := port["src_port"].(string)
+				dp := port["dest_port"].(string)
 				proto := port["proto"].(string)
 
-				utils.Cmd("iptables-nft -t nat -D PREROUTING -d "+t.TunHostPublicIP+" -p "+proto+" -m "+proto+" --dport "+p+" -j DNAT --to-destination "+t.BackendServerTunnelIP, true)
+				dstPort := ""
+
+				if len(dp) > 0 {
+					dstPort = ":" + dp
+				}
+
+				utils.Cmd("iptables-nft -t nat -D PREROUTING -d "+t.TunHostPublicIP+" -p "+proto+" -m "+proto+" --dport "+p+" -j DNAT --to-destination "+t.BackendServerTunnelIP+dstPort, true)
 			}
 		}
 

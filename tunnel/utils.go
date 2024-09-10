@@ -34,8 +34,9 @@ func TunsFromJson(j gjson.Result) []*Tunnel {
 				}
 
 				splitTunnelPorts = append(splitTunnelPorts, map[string]interface{}{
-					"proto": proto,
-					"port":  strings.TrimSpace(value_port.Get("port").String()),
+					"proto":     proto,
+					"src_port":  strings.TrimSpace(value_port.Get("src_port").String()),
+					"dest_port": strings.TrimSpace(value_port.Get("dest_port").String()),
 				})
 
 				return true

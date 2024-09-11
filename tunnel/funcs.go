@@ -61,8 +61,8 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 			return false
 		}
 
-		if t.TunnelDriver == "gre" {
-			utils.Cmd("ip tunnel add "+t.TunnelInterfaceName+" mode gre local "+t.TunHostMainPublicIP+" remote "+t.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(t.TunnelKey), true)
+		if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
+			utils.Cmd("ip tunnel add "+t.TunnelInterfaceName+" mode "+t.TunnelDriver+" local "+t.TunHostMainPublicIP+" remote "+t.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(t.TunnelKey), true)
 			utils.Cmd("ip addr add "+t.TunHostTunnelIP+"/30 dev "+t.TunnelInterfaceName, true)
 		}
 
@@ -82,7 +82,7 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 		utils.Cmd("iptables-nft -A FORWARD -d "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
 		utils.Cmd("iptables-nft -A FORWARD -s "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
 
-		if t.TunnelDriver == "gre" {
+		if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
 			utils.Cmd("iptables-nft -t nat -A POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o "+t.TunnelInterfaceName+" -j SNAT --to-source "+t.TunHostPublicIP, true)
 		}
 
@@ -135,8 +135,8 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 			t.sendIPToTunHost(dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout)
 		}
 
-		if t.TunnelDriver == "gre" {
-			utils.Cmd("ip tunnel add "+t.TunnelInterfaceName+" mode gre local "+t.BackendServerPublicIP+" remote "+t.TunHostMainPublicIP+" ttl 255 key "+utils.IToStr(t.TunnelKey), true)
+		if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
+			utils.Cmd("ip tunnel add "+t.TunnelInterfaceName+" mode "+t.TunnelDriver+" local "+t.BackendServerPublicIP+" remote "+t.TunHostMainPublicIP+" ttl 255 key "+utils.IToStr(t.TunnelKey), true)
 			utils.Cmd("ip addr add "+t.BackendServerTunnelIP+"/30 dev "+t.TunnelInterfaceName, true)
 		}
 
@@ -152,7 +152,7 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 			utils.Cmd("wg set "+t.TunnelInterfaceName+" listen-port "+utils.IToStr(t.WGServerBackendServerListenPort)+" peer "+t.WGTunnelHostPubKey+" allowed-ips 0.0.0.0/0,::/0 endpoint "+t.TunHostMainPublicIP+":"+utils.IToStr(t.WGServerTunnelHostListenPort)+" persistent-keepalive 25", true)
 		}
 
-		if t.TunnelDriver == "gre" {
+		if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
 			utils.Cmd("ip rule add from "+t.TunnelGatewayIP+"/30 table "+t.TunnelRoutingTablesName, true)
 		}
 
@@ -207,8 +207,8 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 
 								t.sendIPToTunHost(dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout)
 
-								if t.TunnelDriver == "gre" {
-									utils.Cmd("ip tunnel change "+t.TunnelInterfaceName+" mode gre local "+t.BackendServerPublicIP+" remote "+t.TunHostMainPublicIP+" ttl 255 key "+utils.IToStr(t.TunnelKey), true)
+								if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
+									utils.Cmd("ip tunnel change "+t.TunnelInterfaceName+" mode "+t.TunnelDriver+" local "+t.BackendServerPublicIP+" remote "+t.TunHostMainPublicIP+" ttl 255 key "+utils.IToStr(t.TunnelKey), true)
 								}
 
 								if t.TunnelDriver == "wireguard" {
@@ -254,7 +254,7 @@ func (t *Tunnel) Deinit(mode, main_network_interface string, ignoreInitialisatio
 		utils.Cmd("iptables-nft -D FORWARD -d "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
 		utils.Cmd("iptables-nft -D FORWARD -s "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
 
-		if t.TunnelDriver == "gre" {
+		if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
 			utils.Cmd("iptables-nft -t nat -D POSTROUTING -s "+t.TunnelGatewayIP+"/30 ! -o "+t.TunnelInterfaceName+" -j SNAT --to-source "+t.TunHostPublicIP, true)
 		}
 
@@ -280,7 +280,7 @@ func (t *Tunnel) Deinit(mode, main_network_interface string, ignoreInitialisatio
 			}
 		}
 
-		if t.TunnelDriver == "gre" {
+		if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
 			utils.Cmd("ip addr del "+t.TunHostTunnelIP+"/30 dev "+t.TunnelInterfaceName, true)
 			utils.Cmd("ip link set "+t.TunnelInterfaceName+" down", true)
 			utils.Cmd("ip tunnel del "+t.TunnelInterfaceName, true)
@@ -316,7 +316,7 @@ func (t *Tunnel) Deinit(mode, main_network_interface string, ignoreInitialisatio
 
 		utils.Cmd("ip route del default via "+t.TunHostTunnelIP+" table "+t.TunnelRoutingTablesName, true)
 
-		if t.TunnelDriver == "gre" {
+		if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
 			utils.Cmd("ip rule del from "+t.TunnelGatewayIP+"/30 table "+t.TunnelRoutingTablesName, true)
 			utils.Cmd("ip addr del "+t.BackendServerTunnelIP+"/30 dev "+t.TunnelInterfaceName, true)
 			utils.Cmd("ip link set "+t.TunnelInterfaceName+" down", true)

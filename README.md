@@ -1,12 +1,13 @@
 # 🚇 Tunnel Manager
 
-An easy to use GRE and WireGuard tunnel manager written in Go (Golang).
+An easy to use GRE, IPIP and WireGuard tunnel manager written in Go (Golang).
 
 ## ✨ Features
 - Dynamic IP addresses support for the backend server(s)
 - Full & split tunnels support
 - Port forwarding configuration for split tunnels
 - Easy multi-tunnel management, all in a single configuration file
+- Support for GRE, IPIP and WireGuard
 
 ## 📙 Glossary
 - **Backend server:** It is the server that you are trying to hide/protect the IP address of.
@@ -39,7 +40,7 @@ For the optimal experience, kindly have a look at the notes listed at https://gi
   * `dynamic_ip_update_attempt_interval`: When a "update_ip" HTTP request fails, this is the pause/sleep before attempting to initiate another one.
 
 - `tunnels`: An array of the tunnel(s) that you would like to have.
-  * `driver`: The driver to use for the tunnel. Possible options are: gre, wireguard
+  * `driver`: The driver to use for the tunnel. Possible options are: gre, wireguard, ipip
 
   * `tunnel_host_main_public_ip`: The main/primary public IP address of the tunnel host.
 

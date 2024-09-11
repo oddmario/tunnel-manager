@@ -2,6 +2,8 @@ package utils
 
 func SysTuning(mode, mainNetworkInterface string) {
 	Cmd("modprobe ip_gre", true)
+	Cmd("modprobe ipip", true)
+	Cmd("modprobe wireguard", true)
 
 	if mode == "tunnel_host" {
 		Cmd("sysctl -w net.ipv4.ip_forward=1", true)

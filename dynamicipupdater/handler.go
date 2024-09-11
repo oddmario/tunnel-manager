@@ -60,8 +60,8 @@ func updateIPHandler(c *gin.Context) {
 	tunnel.BackendServerPublicIP = newIP
 
 	if tunnel.IsInitialised {
-		if tunnel.TunnelDriver == "gre" {
-			utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode gre local "+tunnel.TunHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true)
+		if tunnel.TunnelDriver == "gre" || tunnel.TunnelDriver == "ipip" {
+			utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode "+tunnel.TunnelDriver+" local "+tunnel.TunHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true)
 		}
 
 		if tunnel.TunnelDriver == "wireguard" {

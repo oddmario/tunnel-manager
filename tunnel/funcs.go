@@ -251,6 +251,7 @@ func (t *Tunnel) Deinit(mode, main_network_interface string, ignoreInitialisatio
 	}
 
 	if mode == "tunnel_host" {
+		utils.Cmd("iptables-nft -D FORWARD -i "+t.TunnelInterfaceName+" -j ACCEPT", true)
 		utils.Cmd("iptables-nft -D FORWARD -d "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
 		utils.Cmd("iptables-nft -D FORWARD -s "+t.BackendServerTunnelIP+" -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT", true)
 

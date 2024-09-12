@@ -20,6 +20,12 @@ For the optimal experience, kindly have a look at the notes listed at https://gi
 - `mode`
   * Can be either `backend_server` or `tunnel_host`.
 
+- `apply_kernel_tuning_tweaks`
+  * Should Tunnel Manager apply the recommended kernel tweaks for the purpose of tuning the network performance? Set this to "true" if yes.
+  * The tweaks are applied by Tunnel Manager using the `sysctl` command.
+  * The tweaks are mainly ones that increase the default networking & I/O limits of the Linux kernel.
+  * The tweaks apply only on the tunnel host instance of Tunnel Manager.
+
 - `main_network_interface`
   * The name of the main network interface on the system (e.g. eth0)
 
@@ -131,6 +137,7 @@ systemctl enable --now tunmanager.service
 ```json
 {
     "mode": "tunnel_host",
+    "apply_kernel_tuning_tweaks": false,
     "main_network_interface": "eth0",
     "dynamic_ip_updater_api": {
         "is_enabled": false,
@@ -185,6 +192,7 @@ systemctl enable --now tunmanager.service
 ```json
 {
     "mode": "backend_server",
+    "apply_kernel_tuning_tweaks": false,
     "main_network_interface": "eth0",
     "dynamic_ip_updater_api": {
         "is_enabled": false,
@@ -241,6 +249,7 @@ systemctl enable --now tunmanager.service
 ```json
 {
     "mode": "tunnel_host",
+    "apply_kernel_tuning_tweaks": false,
     "main_network_interface": "eth0",
     "dynamic_ip_updater_api": {
         "is_enabled": false,
@@ -328,6 +337,7 @@ systemctl enable --now tunmanager.service
 ```json
 {
     "mode": "backend_server",
+    "apply_kernel_tuning_tweaks": false,
     "main_network_interface": "eth0",
     "dynamic_ip_updater_api": {
         "is_enabled": false,
@@ -417,6 +427,7 @@ systemctl enable --now tunmanager.service
 ```json
 {
     "mode": "tunnel_host",
+    "apply_kernel_tuning_tweaks": false,
     "main_network_interface": "eth0",
     "dynamic_ip_updater_api": {
         "is_enabled": true,
@@ -471,6 +482,7 @@ systemctl enable --now tunmanager.service
 ```json
 {
     "mode": "backend_server",
+    "apply_kernel_tuning_tweaks": false,
     "main_network_interface": "eth0",
     "dynamic_ip_updater_api": {
         "is_enabled": false,

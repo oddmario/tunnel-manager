@@ -43,7 +43,7 @@ func main() {
 		tunnel.DestroyStorage(config.Config.Tunnels, config.Config.Mode, config.Config.MainNetworkInterface)
 	}()
 
-	utils.SysTuning(config.Config.Mode, config.Config.MainNetworkInterface)
+	utils.SysTuning(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.ApplyKernelTuningTweaks)
 
 	if config.Config.DynamicIPUpdaterAPIIsEnabled {
 		if config.Config.Mode == "tunnel_host" {

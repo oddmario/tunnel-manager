@@ -13,6 +13,7 @@ import (
 var config gjson.Result
 var Config *ConfigObject = &ConfigObject{
 	Mode:                             "",
+	ApplyKernelTuningTweaks:          false,
 	MainNetworkInterface:             "",
 	Tunnels:                          []*tunnel.Tunnel{},
 	DynamicIPUpdaterAPIIsEnabled:     false,
@@ -40,6 +41,7 @@ func LoadConfig() {
 
 func storeEssentialConfigValues() {
 	Config.Mode = config.Get("mode").String()
+	Config.ApplyKernelTuningTweaks = config.Get("apply_kernel_tuning_tweaks").Bool()
 	Config.MainNetworkInterface = config.Get("main_network_interface").String()
 
 	Config.Tunnels = tunnel.TunsFromJson(config.Get("tunnels"))

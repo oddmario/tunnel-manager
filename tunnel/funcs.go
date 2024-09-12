@@ -11,6 +11,8 @@ import (
 )
 
 func (t *Tunnel) sendIPToTunHost(main_network_interface string, dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout int) {
+	var redoRouteAllTrafficThroughTunnel bool = false
+
 	if t.ShouldRouteAllTrafficThroughTunnel && t.IsInitialised {
 		gatewayIP, err := utils.Cmd("ip route show 0.0.0.0/0 dev "+main_network_interface+" | cut -d\\  -f3", true)
 		if err == nil {
@@ -18,6 +20,8 @@ func (t *Tunnel) sendIPToTunHost(main_network_interface string, dynamic_ip_updat
 
 			utils.Cmd("ip route del default via "+t.TunHostTunnelIP, true)
 			utils.Cmd("ip route del "+t.TunHostMainPublicIP+" via "+gatewayIPString+" dev "+main_network_interface+" onlink", true)
+
+			redoRouteAllTrafficThroughTunnel = true
 		}
 	}
 
@@ -48,6 +52,19 @@ func (t *Tunnel) sendIPToTunHost(main_network_interface string, dynamic_ip_updat
 		t.BackendServerPublicIP = external_ip
 
 		break
+	}
+
+	if redoRouteAllTrafficThroughTunnel {
+		gatewayIP, err := utils.Cmd("ip route show 0.0.0.0/0 dev "+main_network_interface+" | cut -d\\  -f3", true)
+		if err == nil {
+			gatewayIPString := strings.TrimSpace(utils.BytesToString(gatewayIP))
+
+			utils.Cmd("echo 'nameserver 1.1.1.1' > /etc/resolv.conf", true)
+			utils.Cmd("echo 'nameserver 1.0.0.1' >> /etc/resolv.conf", true)
+
+			utils.Cmd("ip route add "+t.TunHostMainPublicIP+" via "+gatewayIPString+" dev "+main_network_interface+" onlink", true)
+			utils.Cmd("ip route replace default via "+t.TunHostTunnelIP, true)
+		}
 	}
 }
 

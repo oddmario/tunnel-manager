@@ -43,7 +43,23 @@ func main() {
 		tunnel.DestroyStorage(config.Config.Tunnels, config.Config.Mode, config.Config.MainNetworkInterface)
 	}()
 
-	utils.SysTuning(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.ApplyKernelTuningTweaks)
+	var shouldEnableIPIPmod bool = false
+	var shouldEnableGREmod bool = false
+	var shouldEnableWGmod bool = false
+
+	for _, tun := range config.Config.Tunnels {
+		if tun.TunnelDriver == "gre" && !shouldEnableGREmod {
+			shouldEnableGREmod = true
+		}
+		if tun.TunnelDriver == "ipip" && !shouldEnableIPIPmod {
+			shouldEnableIPIPmod = true
+		}
+		if tun.TunnelDriver == "wireguard" && !shouldEnableWGmod {
+			shouldEnableWGmod = true
+		}
+	}
+
+	utils.SysTuning(shouldEnableIPIPmod, shouldEnableGREmod, shouldEnableWGmod, config.Config.Mode, config.Config.MainNetworkInterface, config.Config.ApplyKernelTuningTweaks)
 
 	if config.Config.DynamicIPUpdaterAPIIsEnabled {
 		if config.Config.Mode == "tunnel_host" {

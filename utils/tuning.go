@@ -1,9 +1,17 @@
 package utils
 
-func SysTuning(mode, mainNetworkInterface string, applyTuningTweaks bool) {
-	Cmd("modprobe ip_gre", true)
-	Cmd("modprobe ipip", true)
-	Cmd("modprobe wireguard", true)
+func SysTuning(shouldEnableIPIPmod, shouldEnableGREmod, shouldEnableWGmod bool, mode, mainNetworkInterface string, applyTuningTweaks bool) {
+	if shouldEnableGREmod {
+		Cmd("modprobe ip_gre", true)
+	}
+
+	if shouldEnableIPIPmod {
+		Cmd("modprobe ipip", true)
+	}
+
+	if shouldEnableWGmod {
+		Cmd("modprobe wireguard", true)
+	}
 
 	if mode == "tunnel_host" {
 		Cmd("sysctl -w net.ipv4.ip_forward=1", true)

@@ -10,7 +10,17 @@ import (
 	"github.com/oddmario/tunnel-manager/utils"
 )
 
-func (t *Tunnel) sendIPToTunHost(dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout int) {
+func (t *Tunnel) sendIPToTunHost(main_network_interface string, dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout int) {
+	if t.ShouldRouteAllTrafficThroughTunnel && t.IsInitialised {
+		gatewayIP, err := utils.Cmd("ip route show 0.0.0.0/0 dev "+main_network_interface+" | cut -d\\  -f3", true)
+		if err == nil {
+			gatewayIPString := strings.TrimSpace(utils.BytesToString(gatewayIP))
+
+			utils.Cmd("ip route del default via "+t.TunHostTunnelIP, true)
+			utils.Cmd("ip route del "+t.TunHostMainPublicIP+" via "+gatewayIPString+" dev "+main_network_interface+" onlink", true)
+		}
+	}
+
 	for {
 		external_ip, err := utils.GetExternalIP()
 
@@ -132,7 +142,7 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 		if t.BackendServerPublicIP == "DYNAMIC" {
 			backendIsDynamicIP = true
 
-			t.sendIPToTunHost(dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout)
+			t.sendIPToTunHost(main_network_interface, dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout)
 		}
 
 		if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
@@ -205,7 +215,7 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 							if i >= 3 {
 								fmt.Println("[INFO] Tunnel " + t.TunHostMainPublicIP + " <-> " + t.BackendServerPublicIP + ": The tunnel is unable to connect to the tunnel host, a network change might have occurred. Attempting to check for any dynamic IP changes...")
 
-								t.sendIPToTunHost(dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout)
+								t.sendIPToTunHost(main_network_interface, dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout)
 
 								if t.TunnelDriver == "gre" || t.TunnelDriver == "ipip" {
 									utils.Cmd("ip tunnel change "+t.TunnelInterfaceName+" mode "+t.TunnelDriver+" local "+t.BackendServerPublicIP+" remote "+t.TunHostMainPublicIP+" ttl 255 key "+utils.IToStr(t.TunnelKey), true)

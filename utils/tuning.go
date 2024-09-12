@@ -6,15 +6,16 @@ func SysTuning(mode, mainNetworkInterface string, applyTuningTweaks bool) {
 	Cmd("modprobe wireguard", true)
 
 	if mode == "tunnel_host" {
+		Cmd("sysctl -w net.ipv4.ip_forward=1", true)
+		Cmd("sysctl -w net.ipv4.conf."+mainNetworkInterface+".proxy_arp=1", true)
+		Cmd("sysctl -w net.ipv4.conf.all.rp_filter=0", true)
+		Cmd("sysctl -w net.ipv4.conf.default.rp_filter=0", true)
+		Cmd("sysctl -w net.ipv4.conf.all.accept_redirects=0", true)
+		Cmd("sysctl -w net.ipv4.conf.default.accept_redirects=0", true)
+
 		if applyTuningTweaks {
 			Cmd("modprobe ip_conntrack", true)
 
-			Cmd("sysctl -w net.ipv4.ip_forward=1", true)
-			Cmd("sysctl -w net.ipv4.conf."+mainNetworkInterface+".proxy_arp=1", true)
-			Cmd("sysctl -w net.ipv4.conf.all.rp_filter=0", true)
-			Cmd("sysctl -w net.ipv4.conf.default.rp_filter=0", true)
-			Cmd("sysctl -w net.ipv4.conf.all.accept_redirects=0", true)
-			Cmd("sysctl -w net.ipv4.conf.default.accept_redirects=0", true)
 			Cmd("sysctl -w net.ipv4.route.flush=1", true)
 			Cmd("sysctl -w net.ipv6.route.flush=1", true)
 			Cmd("sysctl -w net.ipv4.tcp_mtu_probing=1", true)

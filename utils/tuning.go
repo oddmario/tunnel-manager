@@ -6,6 +6,8 @@ func SysTuning(mode, mainNetworkInterface string) {
 	Cmd("modprobe wireguard", true)
 
 	if mode == "tunnel_host" {
+		Cmd("modprobe ip_conntrack", true)
+
 		Cmd("sysctl -w net.ipv4.ip_forward=1", true)
 		Cmd("sysctl -w net.ipv4.conf."+mainNetworkInterface+".proxy_arp=1", true)
 		Cmd("sysctl -w net.ipv4.conf.all.rp_filter=0", true)
@@ -23,6 +25,7 @@ func SysTuning(mode, mainNetworkInterface string) {
 		Cmd("sysctl -w fs.aio-max-nr=2097152", true)
 		Cmd("sysctl -w net.ipv4.tcp_syncookies=1", true)
 		Cmd("sysctl -w net.core.somaxconn=65535", true)
+		Cmd("sysctl -w net.ipv4.tcp_max_syn_backlog=4096", true)
 		Cmd("sysctl -w net.core.netdev_max_backlog=65535", true)
 		Cmd("sysctl -w net.core.dev_weight=128", true)
 		Cmd("sysctl -w net.ipv4.ip_local_port_range=\"1024 65535\"", true)
@@ -31,6 +34,9 @@ func SysTuning(mode, mainNetworkInterface string) {
 		Cmd("sysctl -w net.ipv4.tcp_max_tw_buckets=1440000", true)
 		Cmd("sysctl -w net.ipv4.tcp_congestion_control=bbr", true)
 		Cmd("sysctl -w net.core.default_qdisc=fq_codel", true)
+		Cmd("sysctl -w net.core.optmem_max=16777216", true)
+		Cmd("sysctl -w net.core.rmem_max=16777216", true)
+		Cmd("sysctl -w net.core.wmem_max=16777216", true)
 
 		Cmd("modprobe tcp_bbr", true)
 		Cmd("tc qdisc replace dev "+mainNetworkInterface+" root fq_codel", true)

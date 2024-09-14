@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        go: ["1.22.6"]
+        goos: [linux]
+        goarch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Build with Go
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          go build -o tunmanager_linux_${{ matrix.goarch }} -ldflags="-w -s" -trimpath -v
+          go build -o tunmanager_linux_${{ matrix.goarch }}_debug -trimpath -v
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: tunmanager_linux_*
+          compression-level: 0

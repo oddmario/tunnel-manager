@@ -10,7 +10,7 @@ RUN go mod download
 
 # Copy the rest of the application source code and build the application
 COPY . .
-RUN go build -o tunmanager
+RUN go build -o tunmanager -ldflags="-w -s" -trimpath -v
 
 # Step 2: Runner stage
 FROM alpine:3.20

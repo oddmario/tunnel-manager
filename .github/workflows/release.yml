@@ -1,0 +1,32 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.6'
+
+      - name: Build with Go
+        env:
+          CGO_ENABLED: 0
+        run: |
+          GOARCH=amd64 go build -o tunmanager_linux_amd64 -ldflags="-w -s" -trimpath -v
+          GOARCH=arm64 go build -o tunmanager_linux_arm64 -ldflags="-w -s" -trimpath -v
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          prerelease: ${{ contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+          generate_release_notes: true
+          files: 'tunmanager_linux_*'

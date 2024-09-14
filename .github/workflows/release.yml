@@ -20,8 +20,8 @@ jobs:
         env:
           CGO_ENABLED: 0
         run: |
-          GOARCH=amd64 go build -o tunmanager_linux_amd64 -ldflags="-w -s" -trimpath -v
-          GOARCH=arm64 go build -o tunmanager_linux_arm64 -ldflags="-w -s" -trimpath -v
+          GOARCH=amd64 go build -o tunmanager_linux_amd64 -ldflags="-w -s" -trimpath -v .
+          GOARCH=arm64 go build -o tunmanager_linux_arm64 -ldflags="-w -s" -trimpath -v .
 
       - name: Extract changelog
         env:

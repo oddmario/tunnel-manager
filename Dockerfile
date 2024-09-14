@@ -10,7 +10,7 @@ RUN go mod download
 
 # Copy the rest of the application source code and build the application
 COPY . .
-RUN go build -o tunmanager -ldflags="-w -s" -trimpath -v
+RUN go build -o tunmanager -ldflags="-w -s" -trimpath -v .
 
 # Step 2: Runner stage
 FROM alpine:3.20
@@ -21,5 +21,5 @@ RUN apk add --no-cache iproute2 iptables wireguard-tools
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/tunmanager /tunmanager
 
-# Set the command to run the application
-CMD ["/tunmanager"]
+# Set the entrypoint to run the application
+ENTRYPOINT ["/tunmanager"]

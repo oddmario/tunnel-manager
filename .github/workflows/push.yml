@@ -36,5 +36,6 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
+          name: tunmanager_linux_${{ matrix.goarch }}
           path: tunmanager_linux_*
           compression-level: 0

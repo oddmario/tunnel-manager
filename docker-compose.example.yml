@@ -1,6 +1,6 @@
 services:
   tunmanager:
-    image: ghcr.io/oddmario/tunnel-manager
+    image: ghcr.io/oddmario/tunnel-manager:latest
     restart: always
     network_mode: host
     cap_add:

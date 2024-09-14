@@ -1,0 +1,11 @@
+services:
+  tunmanager:
+    image: ghcr.io/oddmario/tunnel-manager
+    restart: always
+    network_mode: host
+    cap_add:
+      - NET_ADMIN # Allows network administration tasks.
+      - SYS_MODULE # Allows dynamic load/unload of kernel modules on host.
+    volumes:
+      - /lib/modules:/lib/modules # Required to load/unload kernel modules.
+      - ./config.json:/config.json:ro

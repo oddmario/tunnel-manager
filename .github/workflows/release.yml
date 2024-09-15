@@ -19,8 +19,8 @@ jobs:
       - name: Build with Go
         run: |
           platforms=(
-            "linux amd64 simpledns_linux_amd64"
-            "linux arm64 simpledns_linux_arm64"
+            "linux amd64 tunmanager_linux_amd64"
+            "linux arm64 tunmanager_linux_arm64"
           )
         
           for platform in "${platforms[@]}"; do

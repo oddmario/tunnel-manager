@@ -28,7 +28,6 @@ jobs:
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: 0
         run: |
           go build -o tunmanager_${{ matrix.goos }}_${{ matrix.goarch }} -ldflags="-w -s" -trimpath -v .
           go build -o tunmanager_${{ matrix.goos }}_${{ matrix.goarch }}_debug -trimpath -v .

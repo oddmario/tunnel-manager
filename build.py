@@ -25,7 +25,7 @@ def patcher(undo = False):
             file.write(filedata)
 
 def cleanGoBuildCache():
-    subprocess.check_output(["go", "clean", "-cache"])
+    subprocess.check_output("go clean -cache", shell=True)
 
 def build():
     sys_env = os.environ.copy()
@@ -33,13 +33,12 @@ def build():
     print("Building for Linux amd64...")
     sys_env['GOARCH'] = "amd64"
     sys_env['GOOS'] = "linux"
-    sys_env['CGO_ENABLED'] = "0"
-    subprocess.check_output(["go", "build", "-o", "bin/tunmanager_linux_amd64"], env=sys_env)
+    subprocess.check_output("go build -o bin/tunmanager_linux_amd64 -ldflags=\"-w -s\" -trimpath -v", env=sys_env, shell=True)
 
     print("Building for Linux arm64...")
     sys_env['GOARCH'] = "arm64"
     sys_env['GOOS'] = "linux"
-    subprocess.check_output(["go", "build", "-o", "bin/tunmanager_linux_arm64"], env=sys_env)
+    subprocess.check_output("go build -o bin/tunmanager_linux_arm64 -ldflags=\"-w -s\" -trimpath -v", env=sys_env, shell=True)
 
 def main():
     patcher()

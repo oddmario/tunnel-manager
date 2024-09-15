@@ -17,8 +17,6 @@ jobs:
           go-version: '1.22.6'
 
       - name: Build with Go
-        env:
-          CGO_ENABLED: 0
         run: |
           platforms=(
             "linux amd64 simpledns_linux_amd64"

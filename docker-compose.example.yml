@@ -1,8 +1,11 @@
 services:
   tunmanager:
     image: ghcr.io/oddmario/tunnel-manager:latest
+    container_name: tunmanager
     restart: always
     network_mode: host
+    ports:
+      - 30100:30100/tcp # Used by the Dynamic IP updater, feel free to remove if unused.
     cap_add:
       - NET_ADMIN # Allows network administration tasks.
       - SYS_MODULE # Allows dynamic load/unload of kernel modules on host.

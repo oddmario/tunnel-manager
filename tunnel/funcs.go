@@ -18,7 +18,7 @@ func (t *Tunnel) sendIPToTunHost(main_network_interface string, dynamic_ip_updat
 		if err == nil {
 			gatewayIPString := strings.TrimSpace(utils.BytesToString(gatewayIP))
 
-			utils.Cmd("ip route del default via "+t.TunHostTunnelIP, true)
+			utils.Cmd("ip route del default via "+t.TunHostTunnelIP+" metric 0", true)
 			utils.Cmd("ip route del "+t.TunHostMainPublicIP+" via "+gatewayIPString+" dev "+main_network_interface+" onlink", true)
 
 			redoRouteAllTrafficThroughTunnel = true
@@ -63,7 +63,7 @@ func (t *Tunnel) sendIPToTunHost(main_network_interface string, dynamic_ip_updat
 			utils.Cmd("echo 'nameserver 1.0.0.1' >> /etc/resolv.conf", true)
 
 			utils.Cmd("ip route add "+t.TunHostMainPublicIP+" via "+gatewayIPString+" dev "+main_network_interface+" onlink", true)
-			utils.Cmd("ip route replace default via "+t.TunHostTunnelIP, true)
+			utils.Cmd("ip route add default via "+t.TunHostTunnelIP+" metric 0", true)
 		}
 	}
 }
@@ -198,7 +198,7 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 				utils.Cmd("echo 'nameserver 1.0.0.1' >> /etc/resolv.conf", true)
 
 				utils.Cmd("ip route add "+t.TunHostMainPublicIP+" via "+gatewayIPString+" dev "+main_network_interface+" onlink", true)
-				utils.Cmd("ip route replace default via "+t.TunHostTunnelIP, true)
+				utils.Cmd("ip route add default via "+t.TunHostTunnelIP+" metric 0", true)
 			}
 		}
 
@@ -337,7 +337,7 @@ func (t *Tunnel) Deinit(mode, main_network_interface string, ignoreInitialisatio
 			if err == nil {
 				gatewayIPString := strings.TrimSpace(utils.BytesToString(gatewayIP))
 
-				utils.Cmd("ip route del default via "+t.TunHostTunnelIP, true)
+				utils.Cmd("ip route del default via "+t.TunHostTunnelIP+" metric 0", true)
 				utils.Cmd("ip route del "+t.TunHostMainPublicIP+" via "+gatewayIPString+" dev "+main_network_interface+" onlink", true)
 			}
 		}

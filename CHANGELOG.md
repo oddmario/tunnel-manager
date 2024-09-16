@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.9
+
+### Changed
+* In case of `route_all_traffic_through_tunnel`: Tunnel Manager no longer replaces the default route; it adds a new route with the highest priority instead.
+
 ## v1.1.8
 
 ### Changed

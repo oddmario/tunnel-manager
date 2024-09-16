@@ -11,6 +11,10 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+func getPublicIP(c *gin.Context) {
+	c.String(http.StatusOK, c.ClientIP())
+}
+
 func updateIPHandler(c *gin.Context) {
 	key := c.GetHeader("X-Key")
 

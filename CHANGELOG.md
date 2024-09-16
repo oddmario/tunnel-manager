@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.1.10
+
+### Added
+* A startup validator that stops Tunnel Manager from running if more than a tunnel have `route_all_traffic_through_tunnel` enabled.
+
+### Fixed
+* Fixed the instability that previously occurred when (`route_all_traffic_through_tunnel` + dynamic IPs + multiple tunnels on the same backend) were used.
+
 ## v1.1.9
 
 ### Changed

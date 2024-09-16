@@ -11,10 +11,10 @@ import (
 	"syscall"
 
 	"github.com/oddmario/tunnel-manager/config"
-	"github.com/oddmario/tunnel-manager/constants"
 	"github.com/oddmario/tunnel-manager/dynamicipupdater"
 	"github.com/oddmario/tunnel-manager/tunnel"
 	"github.com/oddmario/tunnel-manager/utils"
+	"github.com/oddmario/tunnel-manager/vars"
 )
 
 func main() {
@@ -25,16 +25,16 @@ func main() {
 	args := os.Args[1:]
 
 	if len(args) >= 1 {
-		constants.ConfigFilePath = args[0]
+		vars.ConfigFilePath = args[0]
 	} else {
-		constants.ConfigFilePath, _ = filepath.Abs("./config.json")
+		vars.ConfigFilePath, _ = filepath.Abs("./config.json")
 	}
 
-	if _, err := os.Stat(constants.ConfigFilePath); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(vars.ConfigFilePath); errors.Is(err, os.ErrNotExist) {
 		log.Fatal("The specified configuration file does not exist.")
 	}
 
-	fmt.Println("[INFO] Starting Tunnel Manager v" + constants.Version + "...")
+	fmt.Println("[INFO] Starting Tunnel Manager v" + vars.Version + "...")
 
 	config.LoadConfig()
 	tunnel.InitStorage()

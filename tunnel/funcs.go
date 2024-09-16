@@ -26,7 +26,7 @@ func (t *Tunnel) sendIPToTunHost(main_network_interface string, dynamic_ip_updat
 	}
 
 	for {
-		external_ip, err := utils.GetExternalIP()
+		external_ip, err := utils.GetExternalIP(t.TunHostMainPublicIP, dynamic_ip_update_timeout, dynamic_ip_updater_api_listen_port)
 
 		if err != nil {
 			fmt.Println("[WARN] Unable to send the public IP address of the backend to the tunnel host. Retrying in " + utils.IToStr(dynamic_ip_update_attempt_interval) + " seconds...")

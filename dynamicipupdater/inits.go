@@ -7,6 +7,7 @@ import (
 )
 
 func initRoutes(engine *gin.Engine) {
+	engine.GET("/get_pub_ip", getPublicIP)
 	engine.POST("/update_ip", updateIPHandler)
 }
 

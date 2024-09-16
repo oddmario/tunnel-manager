@@ -1,17 +1,20 @@
 package utils
 
 import (
-	externalip "github.com/glendc/go-external-ip"
+	"errors"
+	"strings"
+	"time"
+
+	"github.com/go-resty/resty/v2"
 )
 
-func GetExternalIP() (string, error) {
-	consensus := externalip.DefaultConsensus(nil, nil)
-	consensus.UseIPProtocol(4)
+func GetExternalIP(tunnel_host_main_public_ip string, dynamic_ip_update_timeout, dynamic_ip_updater_api_listen_port int) (string, error) {
+	req, _ := resty.New().SetTimeout(time.Duration(dynamic_ip_update_timeout) * time.Second).R().
+		Get("http://" + tunnel_host_main_public_ip + ":" + IToStr(dynamic_ip_updater_api_listen_port) + "/get_pub_ip")
 
-	ip, err := consensus.ExternalIP()
-	if err == nil {
-		return ip.String(), nil
-	} else {
-		return "", err
+	if req.StatusCode() != 200 {
+		return "", errors.New("unable to get public ip")
 	}
+
+	return strings.TrimSpace(req.String()), nil
 }

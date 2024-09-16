@@ -4,14 +4,16 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
 	"github.com/oddmario/tunnel-manager/utils"
+	"github.com/oddmario/tunnel-manager/vars"
 	"github.com/tidwall/gjson"
 )
 
-func TunsFromJson(j gjson.Result) []*Tunnel {
+func TunsFromJson(j gjson.Result, ignore_validation bool) []*Tunnel {
 	tuns := []*Tunnel{}
 
 	j.ForEach(func(key, value gjson.Result) bool {
@@ -43,7 +45,7 @@ func TunsFromJson(j gjson.Result) []*Tunnel {
 			})
 		}
 
-		tuns = append(tuns, &Tunnel{
+		tun := &Tunnel{
 			IsInitialised:                      false,
 			TunnelDriver:                       value.Get("driver").String(),
 			TunHostMainPublicIP:                value.Get("tunnel_host_main_public_ip").String(),
@@ -65,7 +67,19 @@ func TunsFromJson(j gjson.Result) []*Tunnel {
 			WGServerBackendServerListenPort:    int(value.Get("wg_server_backend_server_listen_port").Int()),
 			WGTunnelHostPubKey:                 value.Get("wg_tunnel_host_public_key").String(),
 			WGBackendServerPubKey:              value.Get("wg_backend_server_public_key").String(),
-		})
+		}
+
+		if !ignore_validation {
+			if tun.ShouldRouteAllTrafficThroughTunnel {
+				if !vars.IsRouteAllTrafficThroughTunnelEnabled {
+					vars.IsRouteAllTrafficThroughTunnelEnabled = true
+				} else {
+					log.Fatal("You can't have more than a tunnel with `route_all_traffic_through_tunnel` enabled.")
+				}
+			}
+		}
+
+		tuns = append(tuns, tun)
 
 		return true
 	})

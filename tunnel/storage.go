@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/oddmario/tunnel-manager/constants"
 	"github.com/oddmario/tunnel-manager/utils"
+	"github.com/oddmario/tunnel-manager/vars"
 	"github.com/tidwall/gjson"
 )
 
@@ -44,7 +44,7 @@ func InitStorage() bool {
 
 		if gjson.Valid(cfgContentString) {
 			cfg := gjson.Parse(cfgContentString)
-			tuns := TunsFromJson(cfg.Get("tunnels"))
+			tuns := TunsFromJson(cfg.Get("tunnels"), true)
 
 			for _, tun := range tuns {
 				tun.Deinit(cfg.Get("mode").String(), cfg.Get("main_network_interface").String(), true)
@@ -54,7 +54,7 @@ func InitStorage() bool {
 		os.Remove(storageCfgPath)
 	}
 
-	utils.CopyFile(constants.ConfigFilePath, storageCfgPath)
+	utils.CopyFile(vars.ConfigFilePath, storageCfgPath)
 
 	return true
 }

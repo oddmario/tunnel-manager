@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/oddmario/tunnel-manager/constants"
 	"github.com/oddmario/tunnel-manager/tunnel"
 	"github.com/oddmario/tunnel-manager/utils"
+	"github.com/oddmario/tunnel-manager/vars"
 	"github.com/tidwall/gjson"
 )
 
@@ -26,7 +26,7 @@ var Config *ConfigObject = &ConfigObject{
 }
 
 func LoadConfig() {
-	cfg_content, _ := os.ReadFile(constants.ConfigFilePath)
+	cfg_content, _ := os.ReadFile(vars.ConfigFilePath)
 	cfgContentString := utils.BytesToString(cfg_content)
 
 	if !gjson.Valid(cfgContentString) {
@@ -44,7 +44,7 @@ func storeEssentialConfigValues() {
 	Config.ApplyKernelTuningTweaks = config.Get("apply_kernel_tuning_tweaks").Bool()
 	Config.MainNetworkInterface = config.Get("main_network_interface").String()
 
-	Config.Tunnels = tunnel.TunsFromJson(config.Get("tunnels"))
+	Config.Tunnels = tunnel.TunsFromJson(config.Get("tunnels"), false)
 
 	Config.DynamicIPUpdaterAPIIsEnabled = config.Get("dynamic_ip_updater_api.is_enabled").Bool()
 	Config.DynamicIPUpdaterAPIListenAddress = config.Get("dynamic_ip_updater_api.listen_address").String()

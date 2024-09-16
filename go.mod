@@ -38,7 +38,6 @@ require (
 
 require (
 	github.com/gin-gonic/gin v1.10.0
-	github.com/glendc/go-external-ip v0.1.0
 	github.com/go-ping/ping v1.1.0
 	github.com/go-resty/resty/v2 v2.14.0
 	github.com/tidwall/gjson v1.17.3

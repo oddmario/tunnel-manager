@@ -2,8 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -12,14 +10,17 @@ import (
 
 	"github.com/oddmario/tunnel-manager/config"
 	"github.com/oddmario/tunnel-manager/dynamicipupdater"
+	"github.com/oddmario/tunnel-manager/logger"
 	"github.com/oddmario/tunnel-manager/tunnel"
 	"github.com/oddmario/tunnel-manager/utils"
 	"github.com/oddmario/tunnel-manager/vars"
 )
 
 func main() {
+	logger.Init()
+
 	if runtime.GOOS != "linux" {
-		log.Fatal("Sorry! Tunnel Manager can only run on Linux systems.")
+		logger.Fatal("Sorry! Tunnel Manager can only run on Linux systems.")
 	}
 
 	args := os.Args[1:]
@@ -31,10 +32,10 @@ func main() {
 	}
 
 	if _, err := os.Stat(vars.ConfigFilePath); errors.Is(err, os.ErrNotExist) {
-		log.Fatal("The specified configuration file does not exist.")
+		logger.Fatal("The specified configuration file does not exist.")
 	}
 
-	fmt.Println("[INFO] Starting Tunnel Manager v" + vars.Version + "...")
+	logger.Info("Starting Tunnel Manager v" + vars.Version + "...")
 
 	config.LoadConfig()
 	tunnel.InitStorage()
@@ -65,7 +66,7 @@ func main() {
 		if config.Config.Mode == "tunnel_host" {
 			go dynamicipupdater.InitServer()
 		} else {
-			fmt.Println("[WARN] The dynamic IP updater API is meant to be enabled only on the tunnel host. Ignoring `dynamic_ip_updater_api.is_enabled`...")
+			logger.Warn("The dynamic IP updater API is meant to be enabled only on the tunnel host. Ignoring `dynamic_ip_updater_api.is_enabled`...")
 		}
 	}
 

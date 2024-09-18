@@ -1,9 +1,9 @@
 package config
 
 import (
-	"log"
 	"os"
 
+	"github.com/oddmario/tunnel-manager/logger"
 	"github.com/oddmario/tunnel-manager/tunnel"
 	"github.com/oddmario/tunnel-manager/utils"
 	"github.com/oddmario/tunnel-manager/vars"
@@ -30,7 +30,7 @@ func LoadConfig() {
 	cfgContentString := utils.BytesToString(cfg_content)
 
 	if !gjson.Valid(cfgContentString) {
-		log.Fatal("[ERROR] Malformed configuration file")
+		logger.Fatal("Malformed configuration file")
 	} else {
 		config = gjson.Parse(cfgContentString)
 		storeEssentialConfigValues()

@@ -1,12 +1,12 @@
 package dynamicipupdater
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/oddmario/tunnel-manager/config"
+	"github.com/oddmario/tunnel-manager/logger"
 	"github.com/oddmario/tunnel-manager/utils"
 )
 
@@ -34,6 +34,6 @@ func InitServer() {
 
 	err := srv.ListenAndServe()
 	if err != nil {
-		fmt.Println("[ERROR] Failed to start the dynamic IP updater HTTP server. " + err.Error())
+		logger.Error("Failed to start the dynamic IP updater HTTP server. " + err.Error())
 	}
 }

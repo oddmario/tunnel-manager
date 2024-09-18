@@ -3,11 +3,10 @@ package tunnel
 import (
 	"bufio"
 	"errors"
-	"fmt"
-	"log"
 	"os"
 	"strings"
 
+	"github.com/oddmario/tunnel-manager/logger"
 	"github.com/oddmario/tunnel-manager/utils"
 	"github.com/oddmario/tunnel-manager/vars"
 	"github.com/tidwall/gjson"
@@ -18,7 +17,7 @@ func TunsFromJson(j gjson.Result, ignore_validation bool) []*Tunnel {
 
 	j.ForEach(func(key, value gjson.Result) bool {
 		if value.Get("tunnel_type").String() != "split" && value.Get("tunnel_type").String() != "full" {
-			fmt.Println("[WARN] Failed to initialise the tunnel " + value.Get("tunnel_host_main_public_ip").String() + " <-> " + value.Get("backend_server_public_ip").String() + ": The tunnel type has to be either `split` or `full`. Ignoring tunnel initialisation.")
+			logger.Warn("Failed to initialise the tunnel " + value.Get("tunnel_host_main_public_ip").String() + " <-> " + value.Get("backend_server_public_ip").String() + ": The tunnel type has to be either `split` or `full`. Ignoring tunnel initialisation.")
 
 			return true
 		}
@@ -30,7 +29,7 @@ func TunsFromJson(j gjson.Result, ignore_validation bool) []*Tunnel {
 				proto := strings.ToLower(value_port.Get("proto").String())
 
 				if proto != "tcp" && proto != "udp" {
-					fmt.Println("[WARN] Failed to configure split tunnel port for " + value.Get("tunnel_host_main_public_ip").String() + " <-> " + value.Get("backend_server_public_ip").String() + ": Invalid split tunnel port protocol specified. Only TCP & UDP are allowed. Ignoring port rule.")
+					logger.Warn("Failed to configure split tunnel port for " + value.Get("tunnel_host_main_public_ip").String() + " <-> " + value.Get("backend_server_public_ip").String() + ": Invalid split tunnel port protocol specified. Only TCP & UDP are allowed. Ignoring port rule.")
 
 					return true
 				}
@@ -74,7 +73,7 @@ func TunsFromJson(j gjson.Result, ignore_validation bool) []*Tunnel {
 				if !vars.IsRouteAllTrafficThroughTunnelEnabled {
 					vars.IsRouteAllTrafficThroughTunnelEnabled = true
 				} else {
-					log.Fatal("You can't have more than a tunnel with `route_all_traffic_through_tunnel` enabled.")
+					logger.Fatal("You can't have more than a tunnel with `route_all_traffic_through_tunnel` enabled.")
 				}
 			}
 		}

@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.1.11
+
+### Added
+* Added a logger and omitted the usage of `fmt` for logging.
+* Added logging in case of the failure of the execution of any command.
+
+### Changed
+* Improved the kernel tuning parameters
+
 ## v1.1.10
 
 ### Added

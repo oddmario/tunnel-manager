@@ -65,11 +65,11 @@ func updateIPHandler(c *gin.Context) {
 
 	if tunnel.IsInitialised {
 		if tunnel.TunnelDriver == "gre" || tunnel.TunnelDriver == "ipip" {
-			utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode "+tunnel.TunnelDriver+" local "+tunnel.TunHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true)
+			utils.Cmd("ip tunnel change "+tunnel.TunnelInterfaceName+" mode "+tunnel.TunnelDriver+" local "+tunnel.TunHostMainPublicIP+" remote "+tunnel.BackendServerPublicIP+" ttl 255 key "+utils.IToStr(tunnel.TunnelKey), true, true)
 		}
 
 		if tunnel.TunnelDriver == "wireguard" {
-			utils.Cmd("wg set "+tunnel.TunnelInterfaceName+" listen-port "+utils.IToStr(tunnel.WGServerTunnelHostListenPort)+" peer "+tunnel.WGBackendServerPubKey+" allowed-ips "+tunnel.BackendServerTunnelIP+"/32 endpoint "+tunnel.BackendServerPublicIP+":"+utils.IToStr(tunnel.WGServerBackendServerListenPort)+" persistent-keepalive 25", true)
+			utils.Cmd("wg set "+tunnel.TunnelInterfaceName+" listen-port "+utils.IToStr(tunnel.WGServerTunnelHostListenPort)+" peer "+tunnel.WGBackendServerPubKey+" allowed-ips "+tunnel.BackendServerTunnelIP+"/32 endpoint "+tunnel.BackendServerPublicIP+":"+utils.IToStr(tunnel.WGServerBackendServerListenPort)+" persistent-keepalive 25", true, true)
 		}
 	} else {
 		tunnel.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, config.Config.DynamicIPUpdateInterval, config.Config.DynamicIPUpdateTimeout, config.Config.PingInterval, config.Config.PingTimeout)

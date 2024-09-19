@@ -72,7 +72,7 @@ func updateIPHandler(c *gin.Context) {
 			utils.Cmd("wg set "+tunnel.TunnelInterfaceName+" listen-port "+utils.IToStr(tunnel.WGServerTunnelHostListenPort)+" peer "+tunnel.WGBackendServerPubKey+" allowed-ips "+tunnel.BackendServerTunnelIP+"/32 endpoint "+tunnel.BackendServerPublicIP+":"+utils.IToStr(tunnel.WGServerBackendServerListenPort)+" persistent-keepalive 25", true, true)
 		}
 	} else {
-		tunnel.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, config.Config.DynamicIPUpdateInterval, config.Config.DynamicIPUpdateTimeout, config.Config.PingInterval, config.Config.PingTimeout, config.Config.ApplyKernelTuningTweaks)
+		tunnel.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, config.Config.DynamicIPUpdateInterval, config.Config.DynamicIPUpdateTimeout, config.Config.PingInterval, config.Config.PingTimeout)
 	}
 
 	c.Status(http.StatusOK)

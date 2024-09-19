@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.13
+
+### Removed
+* Removed the handling of GRO, GSO and TSO. Tunnel Manager no longer touches them.
+
 ## v1.12
 
 ### Changed

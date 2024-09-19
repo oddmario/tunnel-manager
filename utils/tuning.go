@@ -49,7 +49,6 @@ func SysTuning(shouldEnableIPIPmod, shouldEnableGREmod, shouldEnableWGmod bool, 
 			Cmd("modprobe tcp_cubic", true, true)
 			Cmd("tc qdisc replace dev "+mainNetworkInterface+" root fq_codel limit 99999999", true, true)
 			Cmd("ip link set "+mainNetworkInterface+" txqueuelen 999999999", true, true)
-			Cmd("ethtool -K "+mainNetworkInterface+" gro off gso off tso off", true, true)
 		}
 
 		Cmd("iptables-nft -F", true, true)

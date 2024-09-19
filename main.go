@@ -71,7 +71,7 @@ func main() {
 	}
 
 	for _, tun := range config.Config.Tunnels {
-		tun.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, config.Config.DynamicIPUpdateInterval, config.Config.DynamicIPUpdateTimeout, config.Config.PingInterval, config.Config.PingTimeout)
+		tun.Init(config.Config.Mode, config.Config.MainNetworkInterface, config.Config.DynamicIPUpdaterAPIListenPort, config.Config.DynamicIPUpdateInterval, config.Config.DynamicIPUpdateTimeout, config.Config.PingInterval, config.Config.PingTimeout, config.Config.ApplyKernelTuningTweaks)
 	}
 
 	quitChannel := make(chan os.Signal, 1)

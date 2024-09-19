@@ -1,6 +1,6 @@
 package vars
 
 var ConfigFilePath string = ""
-var Version string = "1.1.11"
+var Version string = "1.12"
 
 var IsRouteAllTrafficThroughTunnelEnabled bool = false

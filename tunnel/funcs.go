@@ -68,7 +68,7 @@ func (t *Tunnel) sendIPToTunHost(main_network_interface string, dynamic_ip_updat
 	}
 }
 
-func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout, ping_interval, ping_timeout int) bool {
+func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_api_listen_port, dynamic_ip_update_attempt_interval, dynamic_ip_update_timeout, ping_interval, ping_timeout int, apply_tuning bool) bool {
 	if t.IsInitialised {
 		logger.Warn("Failed to initialise the tunnel " + t.TunHostMainPublicIP + " <-> " + t.BackendServerPublicIP + ": The tunnel has already been initialised. Ignoring tunnel initialisation.")
 
@@ -253,9 +253,12 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 		}
 	}
 
-	utils.Cmd("tc qdisc replace dev "+t.TunnelInterfaceName+" root fq_codel", true, true)
-	utils.Cmd("ip link set "+t.TunnelInterfaceName+" txqueuelen 15000", true, true)
-	utils.Cmd("ethtool -K "+t.TunnelInterfaceName+" gro off gso off tso off", true, true)
+	utils.Cmd("tc qdisc replace dev "+t.TunnelInterfaceName+" root fq_codel limit 99999999", true, true)
+	utils.Cmd("ip link set "+t.TunnelInterfaceName+" txqueuelen 999999999", true, true)
+
+	if apply_tuning {
+		utils.Cmd("ethtool -K "+t.TunnelInterfaceName+" gro off gso off tso off", true, true)
+	}
 
 	t.IsInitialised = true
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.12
+
+### Changed
+* Versioning format
+* Kernel tuning parameters
+* Make the— GRO, GSO and TSO disabling —a part of the kernel tunings (won't run unless that option is enabled in config.json)
+
 ## v1.1.11
 
 ### Added

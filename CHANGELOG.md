@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.15
+
+### Changed
+* Updated kernel tuning parameters
+
 ## v1.14
 
 ## v1.13

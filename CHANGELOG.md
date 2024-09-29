@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.16
+
+### Changed
+* The default qdisc for the tunnel interface(s) to `noqueue` for immediate packet processing.
+
 ## v1.15
 
 ### Changed

@@ -38,7 +38,7 @@ func SysTuning(shouldEnableIPIPmod, shouldEnableGREmod, shouldEnableWGmod bool, 
 			Cmd("sysctl -w net.netfilter.nf_conntrack_max=1000000", true, true)
 			Cmd("sysctl -w net.ipv4.tcp_max_tw_buckets=1440000", true, true)
 			Cmd("sysctl -w net.ipv4.tcp_congestion_control=bbr", true, true)
-			Cmd("sysctl -w net.core.default_qdisc=fq", true, true)
+			Cmd("sysctl -w net.core.default_qdisc=noqueue", true, true)
 
 			Cmd("sysctl -w net.ipv4.tcp_mtu_probing=1", true, true)
 
@@ -46,7 +46,7 @@ func SysTuning(shouldEnableIPIPmod, shouldEnableGREmod, shouldEnableWGmod bool, 
 			Cmd("sysctl -w net.ipv6.route.flush=1", true, true)
 
 			Cmd("modprobe tcp_bbr", true, true)
-			Cmd("tc qdisc replace dev "+mainNetworkInterface+" root fq limit 99999 flow_limit 99999", true, true)
+			Cmd("tc qdisc replace dev "+mainNetworkInterface+" root noqueue", true, true)
 			Cmd("ip link set "+mainNetworkInterface+" txqueuelen 99999", true, true)
 		}
 

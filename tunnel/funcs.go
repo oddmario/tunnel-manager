@@ -253,7 +253,7 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 		}
 	}
 
-	utils.Cmd("tc qdisc replace dev "+t.TunnelInterfaceName+" root fq limit 99999 flow_limit 99999", true, true)
+	utils.Cmd("tc qdisc replace dev "+t.TunnelInterfaceName+" root noqueue", true, true)
 	utils.Cmd("ip link set "+t.TunnelInterfaceName+" txqueuelen 99999", true, true)
 
 	t.IsInitialised = true

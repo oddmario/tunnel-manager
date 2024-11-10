@@ -29,24 +29,15 @@ func SysTuning(shouldEnableIPIPmod, shouldEnableGREmod, shouldEnableWGmod bool, 
 			Cmd("sysctl -w fs.inotify.max_user_watches=2097152", true, true)
 			Cmd("sysctl -w fs.nr_open=2097152", true, true)
 			Cmd("sysctl -w fs.aio-max-nr=2097152", true, true)
-			Cmd("sysctl -w net.ipv4.tcp_syncookies=1", true, true)
 			Cmd("sysctl -w net.core.somaxconn=65535", true, true)
-			Cmd("sysctl -w net.ipv4.tcp_max_syn_backlog=65535", true, true)
 			Cmd("sysctl -w net.core.netdev_max_backlog=99999", true, true)
 			Cmd("sysctl -w net.ipv4.ip_local_port_range=\"16384 65535\"", true, true)
 			Cmd("sysctl -w net.nf_conntrack_max=1000000", true, true)
 			Cmd("sysctl -w net.netfilter.nf_conntrack_max=1000000", true, true)
-			Cmd("sysctl -w net.ipv4.tcp_max_tw_buckets=1440000", true, true)
-			Cmd("sysctl -w net.ipv4.tcp_congestion_control=bbr", true, true)
-			Cmd("sysctl -w net.core.default_qdisc=noqueue", true, true)
-
-			Cmd("sysctl -w net.ipv4.tcp_mtu_probing=1", true, true)
 
 			Cmd("sysctl -w net.ipv4.route.flush=1", true, true)
 			Cmd("sysctl -w net.ipv6.route.flush=1", true, true)
 
-			Cmd("modprobe tcp_bbr", true, true)
-			Cmd("tc qdisc replace dev "+mainNetworkInterface+" root noqueue", true, true)
 			Cmd("ip link set "+mainNetworkInterface+" txqueuelen 99999", true, true)
 		}
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.18
+
+### Removed
+* Don't touch conntrack
+
 ## v1.16
 
 ### Changed

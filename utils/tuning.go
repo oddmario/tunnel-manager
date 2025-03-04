@@ -23,6 +23,7 @@ func SysTuning(shouldEnableIPIPmod, shouldEnableGREmod, shouldEnableWGmod bool, 
 
 		if applyTuningTweaks {
 			Cmd("modprobe ip_conntrack", true, true)
+			Cmd("modprobe nf_conntrack", true, true)
 
 			Cmd("sysctl -w fs.file-max=2097152", true, true)
 			Cmd("sysctl -w fs.inotify.max_user_instances=2097152", true, true)
@@ -32,6 +33,8 @@ func SysTuning(shouldEnableIPIPmod, shouldEnableGREmod, shouldEnableWGmod bool, 
 			Cmd("sysctl -w net.core.somaxconn=65535", true, true)
 			Cmd("sysctl -w net.core.netdev_max_backlog=99999", true, true)
 			Cmd("sysctl -w net.ipv4.ip_local_port_range=\"16384 65535\"", true, true)
+			Cmd("sysctl -w net.nf_conntrack_max=1000000", true, true)
+			Cmd("sysctl -w net.netfilter.nf_conntrack_max=1000000", true, true)
 
 			Cmd("sysctl -w net.ipv4.route.flush=1", true, true)
 			Cmd("sysctl -w net.ipv6.route.flush=1", true, true)

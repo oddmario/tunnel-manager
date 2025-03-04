@@ -35,6 +35,8 @@ func SysTuning(shouldEnableIPIPmod, shouldEnableGREmod, shouldEnableWGmod bool, 
 			Cmd("sysctl -w net.ipv4.ip_local_port_range=\"16384 65535\"", true, true)
 			Cmd("sysctl -w net.nf_conntrack_max=1000000", true, true)
 			Cmd("sysctl -w net.netfilter.nf_conntrack_max=1000000", true, true)
+			Cmd("sysctl -w net.nf_conntrack_buckets=1000000", true, true)
+			Cmd("sysctl -w net.netfilter.nf_conntrack_buckets=1000000", true, true)
 
 			Cmd("sysctl -w net.ipv4.route.flush=1", true, true)
 			Cmd("sysctl -w net.ipv6.route.flush=1", true, true)

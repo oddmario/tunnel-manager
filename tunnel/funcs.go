@@ -206,8 +206,8 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 			go func() {
 				for {
 					for i := range 4 {
-						pinger, err := ping.NewPinger(t.TunHostTunnelIP)
-						if err != nil {
+						pinger, pingerErr := ping.NewPinger(t.TunHostTunnelIP)
+						if pingerErr != nil {
 							time.Sleep(1 * time.Second)
 
 							continue
@@ -217,8 +217,8 @@ func (t *Tunnel) Init(mode, main_network_interface string, dynamic_ip_updater_ap
 						pinger.Count = 1
 						pinger.Timeout = time.Duration(ping_timeout) * time.Second
 
-						err = pinger.Run()
-						if err != nil {
+						pingerRunErr := pinger.Run()
+						if pingerRunErr != nil {
 							time.Sleep(1 * time.Second)
 
 							continue

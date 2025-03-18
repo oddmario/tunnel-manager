@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.19
+* Ensure no race conditions between goroutines and the main function happen
+
 ## v1.18.2
 
 ## v1.18.1
